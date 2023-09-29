@@ -1,6 +1,31 @@
 import numpy as np
 from mesa import Agent, Model
 
+matrix = [
+    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
+    [1,1,1,1,1,1,5,3,1,2,2,2,2,1,5,3,1,1,1,1,1,1],
+    [6,6,6,6,6,6,7,3,1,2,2,2,2,1,5,8,6,6,6,6,6,6],
+    [4,4,4,4,4,4,7,3,1,2,2,2,2,1,5,8,4,4,4,4,4,4],
+    [1,1,1,1,1,1,5,3,1,2,2,2,2,1,5,3,1,1,1,1,1,1],
+    [2,2,2,2,2,1,5,3,1,2,2,2,2,1,5,3,1,2,2,2,2,2],
+    [2,2,2,2,2,1,5,3,1,2,2,2,2,1,5,3,1,2,2,2,2,2],
+    [2,2,2,2,2,1,5,3,1,2,2,2,2,1,5,3,1,2,2,2,2,2],
+    [2,2,2,2,2,1,5,3,1,2,2,2,2,1,5,3,1,2,2,2,2,2],
+    [1,1,1,1,1,1,5,3,1,1,1,1,1,1,5,3,1,1,1,1,1,1],
+    [6,6,6,6,6,6,9,9,6,6,6,6,6,6,9,9,6,6,6,6,6,6],
+    [4,4,4,4,4,4,9,9,4,4,4,4,4,4,9,9,4,4,4,4,4,4],
+    [1,1,1,1,1,1,5,3,1,1,1,1,1,1,5,3,1,1,1,1,1,1],
+    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3]
+    ]
+
 class Car(Agent):
   def __init__(self, model: Model, pos, speed):
     super().__init__(model.next_id(), model)
@@ -12,9 +37,9 @@ class Car(Agent):
     car_ahead = self.car_ahead()
     #print(traffic_light.pos[0], traffic_light.pos[1])
     self.traffic_light = self.find_nearest_traffic_light()
-    check_TL = False
+    self.check_TL = False
     
-    if check_TL: self.traffic_light = self.find_nearest_traffic_light()
+    if self.check_TL: self.traffic_light = self.find_nearest_traffic_light()
 
     if car_ahead == None:
       traffic_light_ahead = self.traffic_light_ahead()
@@ -35,7 +60,7 @@ class Car(Agent):
     self.model.space.move_agent(self, new_pos)
 
   def car_ahead(self):
-    for neighbor in self.model.space.get_neighbors(self.pos, 1):
+    for neighbor in self.model.space.get_neighbors(self.pos, 0.9):
       if neighbor.pos[0] > self.pos[0] and type(neighbor) == Car:
         return neighbor
     return None
@@ -53,23 +78,18 @@ class Car(Agent):
 
   
   def traffic_light_ahead(self):
-    # if self.traffic_light.state == 1 or self.traffic_light.state == 2:
-    #   i = self.traffic_light.orientation 
-    #   distance = (self.traffic_light.pos[i] - 2) - self.pos[i]
-    #   min_braking_distance = 3.0
-      
-    #   if distance < min_braking_distance and distance > 0.0:
-    #     return distance if distance > 1.0 else 1.0
     i = self.traffic_light.orientation 
-    distance = (self.traffic_light.pos[i] - 3) - self.pos[i]
-    print(self.traffic_light.pos[i] - 3)
+    distance = (self.traffic_light.pos[i]) - self.pos[i]
+    print(self.traffic_light.pos[i])
     if distance > 0.0:
+      self.check_TL = False
       if (self.traffic_light.state == 1 or self.traffic_light.state == 2) and distance < 4.0 and distance > 0.15:
         # only decelerate the following amount 
         return 0.05 if self.speed[self.orientation] > 0.5 else 0.0
-      
       elif (self.traffic_light.state == 1 or self.traffic_light.state == 2) and distance < 0.15 and distance > 0.0:
         return 1.0
+    else:
+      self.check_TL = True
     
     return False
     
@@ -79,8 +99,10 @@ class Car(Agent):
     
     for traffic_light in self.model.traffic_lights:
       if self.orientation == traffic_light.orientation:
+        i = 0 if self.orientation == 1 else 1
         distance = self.calculate_distance(self.pos, traffic_light.pos)
-        if distance < min_distance:
+        axisDifference = abs(traffic_light.pos[i] - self.pos[i])
+        if distance < min_distance and distance > 0.0 and axisDifference < 1.5:
             min_distance = distance
             nearest_traffic_light = traffic_light
             
