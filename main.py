@@ -5,7 +5,7 @@ from mesa.time import RandomActivation
 from mesa.visualization.ModularVisualization import ModularServer
 from auxFiles.SimpleContinuousModule import SimpleCanvas
 import random
- 
+
 from Car import Car
 from TrafficLight import TrafficLight
 
@@ -24,55 +24,81 @@ class City(Model):
     self.space = ContinuousSpace(22, 22, True)
     self.schedule = RandomActivation(self)
     
-    self.traffic_lights = []
+    self.traffic_lights = [] # Almacena los semáforos para revisarlos en la clase carros
     
     self.drawStreets()
+    self.drawTrafficLights()
+    self.drawCars()
+      
+  def step(self):
+    self.schedule.step()
     
-    first = True
+  def drawCars(self):
+    # Horizontal Cars
     py = 7
-    px = 0
-    for _ in np.random.choice(22 + 1, 5, replace=False):
-      px +=1
-      if first:
-        car = Car(self, np.array([px, py]), np.array([1.0, 0.0]))
-        first = False
-      else:
-        car = Car(self, np.array([px, py]), np.array([self.random.randrange(2, 7, 2)/10, 0.0]))
+    for px in range(4):
+      car = Car(self, np.array([px, py]), np.array([self.random.randrange(2, 7, 2)/10, 0.0]))
       self.space.place_agent(car, car.pos)
       self.schedule.add(car)
-      
-    traffic_lights_coords_horizontal = [
-      np.array([16, 5]),
-      np.array([8, 5]),
-      
+
+    # Vertical Cars
+    for py in range(5):
+      px = 6 if random.random() > 0.5 else 14
+      py += 1
+      car = Car(self, np.array([px, py]), np.array([0.0, 0.5]))
+      self.space.place_agent(car, car.pos)
+      self.schedule.add(car)
+    
+  def drawTrafficLights(self):
+    traffic_lights_coords_east = [
       np.array([13, 8]),
       np.array([5, 8]),
     ]
+    
+    traffic_lights_coords_west = [
+      np.array([16, 5]),
+      np.array([8, 5]),
+    ]
       
-    traffic_lights_coords_vertical = [
+    traffic_lights_coords_south = [
       np.array([13, 5]),
       np.array([5, 5]),
-      
+      np.array([5, 13]),
+    ]
+    traffic_lights_coords_north = [
       np.array([16, 8]),
       np.array([8, 8]),
     ]
     
-    for tf_coord in traffic_lights_coords_horizontal:      
-      traffic_light = TrafficLight(self, 24, tf_coord, 0)
-      self.space.place_agent(traffic_light, traffic_light.pos)
-      self.schedule.add(traffic_light)
-      self.traffic_lights.append(traffic_light)
-      
-    for tf_coord in traffic_lights_coords_vertical:      
-      traffic_light = TrafficLight(self, 24, tf_coord, 1)
+    # orientations for traffic lights and cars
+    # 0 -> south
+    # 1 -> east
+    # 2 -> north
+    # 3 -> west
+    
+    for tf_coord in traffic_lights_coords_west:      
+      traffic_light = TrafficLight(self, tf_coord, 3)
       self.space.place_agent(traffic_light, traffic_light.pos)
       self.schedule.add(traffic_light)
       self.traffic_lights.append(traffic_light)
     
-    
+    for tf_coord in traffic_lights_coords_north:      
+      traffic_light = TrafficLight(self, tf_coord, 2)
+      self.space.place_agent(traffic_light, traffic_light.pos)
+      self.schedule.add(traffic_light)
+      self.traffic_lights.append(traffic_light)
+
+    for tf_coord in traffic_lights_coords_east:      
+      traffic_light = TrafficLight(self, tf_coord, 1)
+      self.space.place_agent(traffic_light, traffic_light.pos)
+      self.schedule.add(traffic_light)
+      self.traffic_lights.append(traffic_light)
       
-  def step(self):
-    self.schedule.step()
+    for tf_coord in traffic_lights_coords_south:      
+      traffic_light = TrafficLight(self, tf_coord, 0)
+      self.space.place_agent(traffic_light, traffic_light.pos)
+      self.schedule.add(traffic_light)
+      self.traffic_lights.append(traffic_light)
     
   def drawStreets(self):
     for i in range(22):
@@ -116,11 +142,14 @@ class City(Model):
       self.space.place_agent(street, np.array([i, 15]))
       self.schedule.add(street)
       
-def car_draw(agent):
+def agent_draw(agent):
   if type(agent) == Car:
     color = "Blue" if agent.unique_id % 2 == 0 else "Purple"
-    return {"Shape": "rect", "w": 0.034, "h": 0.02, "Filled": "true", "Color": color}
-  
+    if agent.axis == 0:
+      return {"Shape": "rect", "w": 0.034, "h": 0.02, "Filled": "true", "Color": color}
+    else:
+      return {"Shape": "rect", "w": 0.02, "h": 0.034, "Filled": "true", "Color": color}
+
   elif type(agent) == TrafficLight:
     if agent.state == 0:
       color = "Green"
@@ -128,7 +157,7 @@ def car_draw(agent):
       color = "Yellow"
     elif agent.state == 2:
       color = "Red"
-    if agent.orientation == 0:
+    if agent.orientation == 1 or agent.orientation == 3:
       return {"Shape": "rect", "w": 0.015, "h": 0.04, "Filled": "true", "Color": color}
     else:
       return {"Shape": "rect", "w": 0.04, "h": 0.015, "Filled": "true", "Color": color}
@@ -140,7 +169,7 @@ def car_draw(agent):
       return {"Shape": "rect", "w": 0.034, "h": 0.05, "Filled": "false", "Color": "Gray"}
     
 
-canvas = SimpleCanvas(car_draw, 500, 500)
+canvas = SimpleCanvas(agent_draw, 500, 500)
 
 
 model_params = {}
