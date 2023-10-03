@@ -34,18 +34,51 @@ class City(Model):
     self.schedule.step()
     
   def drawCars(self):
-    # Horizontal Cars
+    # --- Horizontal Cars ---
+    
+    # West Cars
+    py = 6
+    px = 20
+    for i in range(2):
+      px += i
+      car = Car(self, np.array([px, py]), np.array([-0.5,0.0]))
+      self.space.place_agent(car, car.pos)
+      self.schedule.add(car)
+      
+    # East Cars
     py = 7
-    for px in range(4):
+    for px in range(2):
       car = Car(self, np.array([px, py]), np.array([self.random.randrange(2, 7, 2)/10, 0.0]))
       self.space.place_agent(car, car.pos)
       self.schedule.add(car)
 
-    # Vertical Cars
-    for py in range(5):
-      px = 6 if random.random() > 0.5 else 14
+    # --- Vertical Cars ---
+    
+    # South Cars
+    first = True
+    for py in range(4):
+      if first:
+        px = 6
+        first = False
+      else:
+        px = 14
+        first = True
       py += 1
       car = Car(self, np.array([px, py]), np.array([0.0, 0.5]))
+      self.space.place_agent(car, car.pos)
+      self.schedule.add(car)
+      
+    # North Cars
+    first = True
+    for py in range(4):
+      if first:
+        px = 7
+        first = False
+      else:
+        px = 15
+        first = True
+      py += 1
+      car = Car(self, np.array([px, py]), np.array([0.0, -0.5]))
       self.space.place_agent(car, car.pos)
       self.schedule.add(car)
     
@@ -53,26 +86,21 @@ class City(Model):
     traffic_lights_coords_east = [
       np.array([13, 8]),
       np.array([5, 8]),
-      np.array([5, 16]),
     ]
     
     traffic_lights_coords_west = [
       np.array([16, 5]),
       np.array([8, 5]),
-      np.array([16, 13]),
     ]
       
     traffic_lights_coords_south = [
       np.array([13, 5]),
       np.array([5, 5]),
       np.array([5, 13]),
-      np.array([13, 13]),
     ]
     traffic_lights_coords_north = [
       np.array([16, 8]),
       np.array([8, 8]),
-      np.array([16, 16]),
-      np.array([8, 16]),
     ]
     
     # orientations for traffic lights and cars
