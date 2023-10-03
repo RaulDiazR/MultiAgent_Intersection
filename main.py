@@ -9,12 +9,9 @@ import random
 from Car import Car
 from TrafficLight import TrafficLight
 
-
-
 class Street(Agent):
   def __init__(self, model, orientation):
     super().__init__(model.next_id(), model)
-    self.orientation = orientation
     
   def step(self):
     return
@@ -25,31 +22,31 @@ class City(Model):
     super().__init__()
     self.space = ContinuousSpace(22, 22, True)
     self.schedule = RandomActivation(self)
-
     self.matrix = [
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [1,1,1,1,1,1,5,3,1,2,2,2,2,1,5,3,1,1,1,1,1,1],
-    [6,6,6,6,6,6,7,3,1,2,2,2,2,1,5,8,6,6,6,6,6,6],
-    [4,4,4,4,4,4,7,3,1,2,2,2,2,1,5,8,4,4,4,4,4,4],
-    [1,1,1,1,1,1,5,3,1,2,2,2,2,1,5,3,1,1,1,1,1,1],
-    [2,2,2,2,2,1,5,3,1,2,2,2,2,1,5,3,1,2,2,2,2,2],
-    [2,2,2,2,2,1,5,3,1,2,2,2,2,1,5,3,1,2,2,2,2,2],
-    [2,2,2,2,2,1,5,3,1,2,2,2,2,1,5,3,1,2,2,2,2,2],
-    [2,2,2,2,2,1,5,3,1,2,2,2,2,1,5,3,1,2,2,2,2,2],
-    [1,1,1,1,1,1,5,3,1,1,1,1,1,1,5,3,1,1,1,1,1,1],
-    [6,6,6,6,6,6,9,9,6,6,6,6,6,6,9,9,6,6,6,6,6,6],
-    [4,4,4,4,4,4,9,9,4,4,4,4,4,4,9,9,4,4,4,4,4,4],
-    [1,1,1,1,1,1,5,3,1,1,1,1,1,1,5,3,1,1,1,1,1,1],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3]
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [1,1,1,1,1,1,5,7,1,1,1,1,1,1,5,7,1,1,1,1,1,1],
+    [6,6,6,6,6,6,8,10,6,6,6,6,6,6,8,10,6,6,6,6,6,6],
+    [4,4,4,4,4,4,9,11,4,4,4,4,4,4,9,11,4,4,4,4,4,4],
+    [1,1,1,1,1,1,5,7,1,2,2,2,2,1,5,7,1,1,1,1,1,1],
+    [2,2,2,2,2,1,5,7,1,2,2,2,2,1,5,7,1,2,2,2,2,2],
+    [2,2,2,2,2,1,5,7,1,2,2,2,2,1,5,7,1,2,2,2,2,2],
+    [2,2,2,2,2,1,5,7,1,2,2,2,2,1,5,7,1,2,2,2,2,2],
+    [2,2,2,2,2,1,5,7,1,2,2,2,2,1,5,7,1,2,2,2,2,2],
+    [1,1,1,1,1,1,5,7,1,2,2,2,2,1,5,7,1,1,1,1,1,1],
+    [6,6,6,6,6,6,8,7,1,2,2,2,2,1,5,7,6,6,6,6,6,6],
+    [4,4,4,4,4,4,9,7,1,2,2,2,2,1,9,11,4,4,4,4,4,4],
+    [1,1,1,1,1,1,5,7,1,2,2,2,2,1,5,7,1,1,1,1,1,1],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3]
     ]
+    
     
     self.traffic_lights = [] # Almacena los semáforos para revisarlos en la clase carros
     
@@ -166,46 +163,15 @@ class City(Model):
       self.traffic_lights.append(traffic_light)
     
   def drawStreets(self):
-    for i in range(22):
-      street = Street(self, 0)
-      self.space.place_agent(street, np.array([i, 6]))
-      self.schedule.add(street)
-      street = Street(self, 0)
-      self.space.place_agent(street, np.array([i, 7]))
-      self.schedule.add(street)
-      
-    for i in range(22):
-      street = Street(self, 1)
-      self.space.place_agent(street, np.array([6, i]))
-      self.schedule.add(street)
-      street = Street(self, 1)
-      self.space.place_agent(street, np.array([7, i]))
-      self.schedule.add(street)
-      
-    for i in range(22):
-      street = Street(self, 1)
-      self.space.place_agent(street, np.array([14, i]))
-      self.schedule.add(street)
-      street = Street(self, 1)
-      self.space.place_agent(street, np.array([15, i]))
-      self.schedule.add(street)
-      
-    for i in range(8):
-      street = Street(self, 0)
-      self.space.place_agent(street, np.array([i, 14]))
-      self.schedule.add(street)
-      street = Street(self, 0)
-      self.space.place_agent(street, np.array([i, 15]))
-      self.schedule.add(street)
-      
-    for i in range(8):
-      i += 14
-      street = Street(self, 0)
-      self.space.place_agent(street, np.array([i, 14]))
-      self.schedule.add(street)
-      street = Street(self, 0)
-      self.space.place_agent(street, np.array([i, 15]))
-      self.schedule.add(street)
+    for i in range(len(self.matrix)):
+      for j in range(len(self.matrix)):
+        if (i == 13 and j == 14):
+          a = 5
+        if self.matrix[i][j] >= 4:
+          street = Street(self, 0)
+          self.space.place_agent(street,(j, i))
+          self.schedule.add(street)
+   
       
 def agent_draw(agent):
   if type(agent) == Car:
@@ -228,10 +194,7 @@ def agent_draw(agent):
       return {"Shape": "rect", "w": 0.04, "h": 0.015, "Filled": "true", "Color": color}
   
   elif type(agent) == Street:
-    if agent.orientation == 0:
-      return {"Shape": "rect", "w": 0.05, "h": 0.034, "Filled": "false", "Color": "Gray"}
-    else:
-      return {"Shape": "rect", "w": 0.034, "h": 0.05, "Filled": "false", "Color": "Gray"}
+    return {"Shape": "rect", "w": 0.05, "h": 0.05, "Filled": "false", "Color": "Gray"}
     
 
 canvas = SimpleCanvas(agent_draw, 500, 500)
