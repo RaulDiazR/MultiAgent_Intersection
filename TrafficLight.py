@@ -13,7 +13,7 @@ class TrafficLight(Agent):
     self.duration = 100
     
     # Changes traffic light time according to orientation so they are coordinated   
-    if self.orientation == 0 or self.orientation == 2:
+    if self.orientation == "SOUTH" or self.orientation == "NORTH":
       self.gTime = self.duration * 0.4
       self.rTime = self.duration * 0.5
     else:
@@ -29,7 +29,7 @@ class TrafficLight(Agent):
     # 0 -> Green
     # 1 -> Yellow
     # 2 -> Red
-    self.state = 0 if self.orientation == 0 or self.orientation == 2 else 2
+    self.state = 0 if self.orientation == "SOUTH" or self.orientation == "NORTH" else 2
     
     # stores position in space
     self.pos = position

@@ -139,25 +139,25 @@ class City(Model):
     # 3 -> west
     
     for tf_coord in traffic_lights_coords_west:      
-      traffic_light = TrafficLight(self, tf_coord, 3)
+      traffic_light = TrafficLight(self, tf_coord, "WEST")
       self.space.place_agent(traffic_light, traffic_light.pos)
       self.schedule.add(traffic_light)
       self.traffic_lights.append(traffic_light)
     
     for tf_coord in traffic_lights_coords_north:      
-      traffic_light = TrafficLight(self, tf_coord, 2)
+      traffic_light = TrafficLight(self, tf_coord, "NORTH")
       self.space.place_agent(traffic_light, traffic_light.pos)
       self.schedule.add(traffic_light)
       self.traffic_lights.append(traffic_light)
 
     for tf_coord in traffic_lights_coords_east:      
-      traffic_light = TrafficLight(self, tf_coord, 1)
+      traffic_light = TrafficLight(self, tf_coord, "EAST")
       self.space.place_agent(traffic_light, traffic_light.pos)
       self.schedule.add(traffic_light)
       self.traffic_lights.append(traffic_light)
       
     for tf_coord in traffic_lights_coords_south:      
-      traffic_light = TrafficLight(self, tf_coord, 0)
+      traffic_light = TrafficLight(self, tf_coord, "SOUTH")
       self.space.place_agent(traffic_light, traffic_light.pos)
       self.schedule.add(traffic_light)
       self.traffic_lights.append(traffic_light)
@@ -186,7 +186,7 @@ def agent_draw(agent):
       color = "Yellow"
     elif agent.state == 2:
       color = "Red"
-    if agent.orientation == 1 or agent.orientation == 3:
+    if agent.orientation == "EAST" or agent.orientation == "WEST":
       return {"Shape": "rect", "w": 0.015, "h": 0.04, "Filled": "true", "Color": color}
     else:
       return {"Shape": "rect", "w": 0.04, "h": 0.015, "Filled": "true", "Color": color}
