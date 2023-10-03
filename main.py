@@ -165,8 +165,6 @@ class City(Model):
   def drawStreets(self):
     for i in range(len(self.matrix)):
       for j in range(len(self.matrix)):
-        if (i == 13 and j == 14):
-          a = 5
         if self.matrix[i][j] >= 4:
           street = Street(self, 0)
           self.space.place_agent(street,(j, i))
