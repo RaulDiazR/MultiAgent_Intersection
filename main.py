@@ -86,21 +86,26 @@ class City(Model):
     traffic_lights_coords_east = [
       np.array([13, 8]),
       np.array([5, 8]),
+      np.array([5, 16]),
     ]
     
     traffic_lights_coords_west = [
       np.array([16, 5]),
       np.array([8, 5]),
+      np.array([16, 13]),
     ]
       
     traffic_lights_coords_south = [
       np.array([13, 5]),
       np.array([5, 5]),
       np.array([5, 13]),
+      np.array([13, 13]),
     ]
     traffic_lights_coords_north = [
       np.array([16, 8]),
       np.array([8, 8]),
+      np.array([16, 16]),
+      np.array([8, 16]),
     ]
     
     # orientations for traffic lights and cars
