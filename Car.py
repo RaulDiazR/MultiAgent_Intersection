@@ -18,44 +18,57 @@ class Car(Agent):
         self.check_TL = False  # support variable that indicates if a new traffic light has to be found (happens when the car gets ahead of its current traffic light)
 
     def step(self):
-      #print(self.speed)
-      print(self.traffic_light)
-      car_ahead = self.car_ahead()  # check if theres any car ahead
-      currCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
-      if currCell != self.cell:
-          self.decide_direction()
+        # print(self.speed)
+        print(self.traffic_light)
+        car_ahead = self.car_ahead()  # check if theres any car ahead
+        currCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
+        offset = 0
+        if not (
+            self.pos[0] + offset < len(self.matrix)
+            and self.pos[1] + offset < len(self.matrix)
+            and self.pos[0] - offset > 0
+            and self.pos[1] - offset > 0
+            and currCell
+            == self.matrix[math.floor(self.pos[1] + offset)][math.floor(self.pos[0] + offset)]
+            and currCell
+            == self.matrix[math.floor(self.pos[1] - offset)][math.floor(self.pos[0] - offset)]
+        ):
+            currCell = self.cell
+        else:
+            print("control")
+        if currCell != self.cell:
+            self.decide_direction()
+        if self.check_TL:
+            self.traffic_light = self.find_nearest_traffic_light()
 
-      if self.check_TL:
-          self.traffic_light = self.find_nearest_traffic_light()
+        # if there is no car ahead, it checks if the nearest traffic light is close
+        if car_ahead == None:
+            braking_speed = self.traffic_light_ahead()
+            if braking_speed != False:
+                new_speed = self.brake(braking_speed)
+            else:
+                new_speed = self.accelerate()
 
-      # if there is no car ahead, it checks if the nearest traffic light is close
-      if car_ahead == None:
-          braking_speed = self.traffic_light_ahead()
-          if braking_speed != False:
-              new_speed = self.brake(braking_speed)
-          else:
-              new_speed = self.accelerate()
+        # decelerates if there is a car ahead
+        else:
+            new_speed = self.decelerate(car_ahead)
 
-      # decelerates if there is a car ahead
-      else:
-          new_speed = self.decelerate(car_ahead)
+        if self.movementDir == 1:
+            if new_speed >= 1.0:
+                new_speed = 1.0
+            elif new_speed <= 0.0:
+                new_speed = 0.0
+        else:
+            if new_speed <= -1.0:
+                new_speed = -1.0
+            elif new_speed >= 0.0:
+                new_speed = 0.0
 
-      if self.movementDir == 1:
-          if new_speed >= 1.0:
-              new_speed = 1.0
-          elif new_speed <= 0.0:
-              new_speed = 0.0
-      else:
-          if new_speed <= -1.0:
-              new_speed = -1.0
-          elif new_speed >= 0.0:
-              new_speed = 0.0
+        self.speed = np.array([0.0, 0.0])
+        self.speed[self.axis] = new_speed
 
-      self.speed = np.array([0.0, 0.0])
-      self.speed[self.axis] = new_speed
-
-      new_pos = self.pos + np.array([0.3, 0.3]) * self.speed
-      self.model.space.move_agent(self, new_pos)
+        new_pos = self.pos + np.array([0.3, 0.3]) * self.speed
+        self.model.space.move_agent(self, new_pos)
 
     def car_ahead(self):
         # checks if there is a car ahead, in said case it decelerates so it doesn´t crash
@@ -171,13 +184,18 @@ class Car(Agent):
     def decide_direction(self):
         newCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
 
-        #Check for illegal turns
+        # Check for illegal turns
         if newCell == 9 and self.cell == 8:
             newCell == 5
         if newCell == 10 and self.cell == 11:
             newCell = 7
+        if newCell == 11 and self.cell == 9:
+            newCell = 4
+        if newCell == 8 and self.cell == 10:
+            newCell = 6
         
-        #Decide orientation based on type of cell
+
+        # Decide orientation based on type of cell
         if newCell == 4:
             orientation = "EAST"
         elif newCell == 5:
@@ -228,4 +246,6 @@ class Car(Agent):
         # east: positive movement
         # north: negative movement
         # west: negative movement
-        self.movementDir = 1 if self.orientation == "SOUTH" or self.orientation == "EAST" else -1
+        self.movementDir = (
+            1 if self.orientation == "SOUTH" or self.orientation == "EAST" else -1
+        )
