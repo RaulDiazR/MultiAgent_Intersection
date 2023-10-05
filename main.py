@@ -61,17 +61,17 @@ class City(Model):
     # --- Horizontal Cars ---
     
     # West Cars
-    py = 6
+    py = 6.5
     px = 20
-    for i in range(0):
+    for i in range(2):
       px += i
       car = Car(self, np.array([px, py]),)
       self.space.place_agent(car, car.pos)
       self.schedule.add(car)
       
     # East Cars
-    py = 7
-    for px in range(1):
+    py = 7.5
+    for px in range(2):
       car = Car(self, np.array([px, py]),)
       self.space.place_agent(car, car.pos)
       self.schedule.add(car)
@@ -80,12 +80,12 @@ class City(Model):
     
     # South Cars
     first = True
-    for py in range(0):
+    for py in range(4):
       if first:
-        px = 6
+        px = 6.5
         first = False
       else:
-        px = 14
+        px = 14.5
         first = True
       py += 1
       car = Car(self, np.array([px, py]),)
@@ -94,12 +94,12 @@ class City(Model):
       
     # North Cars
     first = True
-    for py in range(0):
+    for py in range(4):
       if first:
-        px = 7
+        px = 7.5
         first = False
       else:
-        px = 15
+        px = 15.5
         first = True
       py += 1
       car = Car(self, np.array([px, py]),)

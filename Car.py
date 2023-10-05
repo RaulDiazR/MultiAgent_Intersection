@@ -12,6 +12,7 @@ class Car(Agent):
         self.pos = pos  # current position
         self.orientation = ""
         self.matrix = model.matrix
+        self.cell = 0
         self.decide_direction()
 
         self.traffic_light = self.find_nearest_traffic_light()
@@ -19,10 +20,9 @@ class Car(Agent):
 
     def step(self):
         # print(self.speed)
-        print(self.traffic_light)
         car_ahead = self.car_ahead()  # check if theres any car ahead
         currCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
-        offset = 0
+        offset = 0.4
         if not (
             self.pos[0] + offset < len(self.matrix)
             and self.pos[1] + offset < len(self.matrix)
@@ -53,26 +53,28 @@ class Car(Agent):
         else:
             new_speed = self.decelerate(car_ahead)
 
+        speedLimit = 0.3
+
         if self.movementDir == 1:
-            if new_speed >= 1.0:
-                new_speed = 1.0
+            if new_speed >= speedLimit:
+                new_speed = speedLimit
             elif new_speed <= 0.0:
                 new_speed = 0.0
         else:
-            if new_speed <= -1.0:
-                new_speed = -1.0
+            if new_speed <= -speedLimit:
+                new_speed = -speedLimit
             elif new_speed >= 0.0:
                 new_speed = 0.0
 
         self.speed = np.array([0.0, 0.0])
         self.speed[self.axis] = new_speed
-
+        
         new_pos = self.pos + np.array([0.3, 0.3]) * self.speed
         self.model.space.move_agent(self, new_pos)
 
     def car_ahead(self):
         # checks if there is a car ahead, in said case it decelerates so it doesn´t crash
-        radius = 0.5 if self.movementDir == 1 else 1.5
+        radius = 1 if self.movementDir == 1 else 2
         for neighbor in self.model.space.get_neighbors(self.pos, radius, False):
             if (
                 self.movementDir == 1
@@ -168,7 +170,7 @@ class Car(Agent):
                 # the correct traffic light based on the fact that the traffic light corresponding to each car should not
                 # be further than 1.5 of diantce in said axis
                 axisDifference = abs(traffic_light.pos[i] - self.pos[i])
-                if distance < min_distance and distance > 0.0 and axisDifference < 1.5:
+                if distance < min_distance and distance > 0.0 and axisDifference < 3.5:
                     min_distance = distance
                     nearest_traffic_light = traffic_light
 
@@ -183,18 +185,8 @@ class Car(Agent):
 
     def decide_direction(self):
         newCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
-
-        # Check for illegal turns
-        if newCell == 9 and self.cell == 8:
-            newCell == 5
-        if newCell == 10 and self.cell == 11:
-            newCell = 7
-        if newCell == 11 and self.cell == 9:
-            newCell = 4
-        if newCell == 8 and self.cell == 10:
-            newCell = 6
-        
-
+        print("newCell", newCell)
+        print(self.pos)
         # Decide orientation based on type of cell
         if newCell == 4:
             orientation = "EAST"
@@ -207,14 +199,25 @@ class Car(Agent):
         elif newCell == 8:
             orientation = self.randomDirection("WEST", "SOUTH")
         elif newCell == 9:
-            orientation = self.randomDirection("SOUTH", "EAST")
+            if self.cell == 8:
+                orientation = "SOUTH"
+            else:
+                orientation = self.randomDirection("SOUTH", "EAST")
         elif newCell == 10:
-            orientation = self.randomDirection("NORTH", "WEST")
+            if self.cell == 11:
+                orientation = "NORTH"
+            else:
+                orientation = self.randomDirection("NORTH", "WEST")
         elif newCell == 11:
-            orientation = self.randomDirection("NORTH", "EAST")
+            if self.cell == 9:
+                orientation = "EAST"
+            else:
+                orientation = self.randomDirection("NORTH", "EAST")
         else:
             orientation = "NORTH"
+        print("cell", self.cell)
         self.cell = newCell
+        
         self.orientate(orientation)
 
     def randomDirection(self, direction1, direction2):
