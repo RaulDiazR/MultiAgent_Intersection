@@ -169,26 +169,34 @@ class Car(Agent):
         return distance
 
     def decide_direction(self):
-        self.cell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
-        if self.cell == 4:
+        newCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
+
+        #Check for illegal turns
+        if newCell == 9 and self.cell == 8:
+            newCell == 5
+        if newCell == 10 and self.cell == 11:
+            newCell = 7
+        
+        #Decide orientation based on type of cell
+        if newCell == 4:
             orientation = "EAST"
-        elif self.cell == 5:
+        elif newCell == 5:
             orientation = "SOUTH"
-        elif self.cell == 6:
+        elif newCell == 6:
             orientation = "WEST"
-        elif self.cell == 7:
+        elif newCell == 7:
             orientation = "NORTH"
-        elif self.cell == 8:
-            orientation = self.randomDirection("EAST", "SOUTH")
-        elif self.cell == 9:
+        elif newCell == 8:
+            orientation = self.randomDirection("WEST", "SOUTH")
+        elif newCell == 9:
             orientation = self.randomDirection("SOUTH", "EAST")
-        elif self.cell == 10:
+        elif newCell == 10:
             orientation = self.randomDirection("NORTH", "WEST")
-        elif self.cell == 11:
+        elif newCell == 11:
             orientation = self.randomDirection("NORTH", "EAST")
         else:
             orientation = "NORTH"
-        print(orientation)
+        self.cell = newCell
         self.orientate(orientation)
 
     def randomDirection(self, direction1, direction2):
