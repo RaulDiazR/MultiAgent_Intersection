@@ -38,7 +38,7 @@ class City(Model):
     [2,2,2,2,2,1,5,7,1,2,2,2,2,1,5,7,1,2,2,2,2,2],
     [1,1,1,1,1,1,5,7,1,2,2,2,2,1,5,7,1,1,1,1,1,1],
     [6,6,6,6,6,6,8,7,1,2,2,2,2,1,5,7,6,6,6,6,6,6],
-    [4,4,4,4,4,4,9,7,1,2,2,2,2,1,9,11,4,4,4,4,4,4],
+    [4,4,4,4,4,4,9,7,1,2,2,2,2,1,5,11,4,4,4,4,4,4],
     [1,1,1,1,1,1,5,7,1,2,2,2,2,1,5,7,1,1,1,1,1,1],
     [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
     [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
@@ -63,7 +63,7 @@ class City(Model):
     # West Cars
     py = 6
     px = 20
-    for i in range(2):
+    for i in range(0):
       px += i
       car = Car(self, np.array([px, py]),)
       self.space.place_agent(car, car.pos)
@@ -71,7 +71,7 @@ class City(Model):
       
     # East Cars
     py = 7
-    for px in range(2):
+    for px in range(1):
       car = Car(self, np.array([px, py]),)
       self.space.place_agent(car, car.pos)
       self.schedule.add(car)
@@ -80,7 +80,7 @@ class City(Model):
     
     # South Cars
     first = True
-    for py in range(4):
+    for py in range(0):
       if first:
         px = 6
         first = False
@@ -94,7 +94,7 @@ class City(Model):
       
     # North Cars
     first = True
-    for py in range(4):
+    for py in range(0):
       if first:
         px = 7
         first = False
@@ -192,7 +192,7 @@ def agent_draw(agent):
       return {"Shape": "rect", "w": 0.04, "h": 0.015, "Filled": "true", "Color": color}
   
   elif type(agent) == Street:
-    return {"Shape": "rect", "w": 0.05, "h": 0.05, "Filled": "false", "Color": "Gray"}
+    return {"Shape": "rect", "w": 0.1, "h": 0.1, "Filled": "false", "Color": "Gray"}
     
 
 canvas = SimpleCanvas(agent_draw, 500, 500)
