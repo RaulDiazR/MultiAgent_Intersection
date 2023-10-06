@@ -21,6 +21,7 @@ class Car(Agent):
     def step(self):
         # print(self.speed)
         car_ahead = self.car_ahead()  # check if theres any car ahead
+        if self.pos[self.axis] >= 22: self.pos[self.axis] -= 1
         currCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
         offset = 0.4
         if not (
@@ -94,10 +95,10 @@ class Car(Agent):
         return None
 
     def accelerate(self):
-        return self.speed[self.axis] + (0.05 * self.movementDir)
+        return self.speed[self.axis] + (0.025 * self.movementDir)
 
     def decelerate(self, car_ahead):
-        return car_ahead.speed[self.axis] - (0.1 * self.movementDir)
+        return car_ahead.speed[self.axis] - (0.05 * self.movementDir)
 
     def brake(self, deceleration):
         # brakes the given amount, which can be either small or big enough to stop the car completely

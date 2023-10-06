@@ -10,7 +10,7 @@ class TrafficLight(Agent):
     # 3 -> west
     self.orientation = orientation
     # sets the default duration in seconds of the traffic light
-    self.duration = 100
+    self.duration = 200
     
     # Changes traffic light time according to orientation so they are coordinated   
     if self.orientation == "SOUTH" or self.orientation == "NORTH":
