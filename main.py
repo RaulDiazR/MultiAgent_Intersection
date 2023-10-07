@@ -38,7 +38,7 @@ class City(Model):
     [2,2,2,2,2,1,5,7,1,2,2,2,2,1,5,7,1,2,2,2,2,2],
     [1,1,1,1,1,1,5,7,1,2,2,2,2,1,5,7,1,1,1,1,1,1],
     [6,6,6,6,6,6,8,7,1,2,2,2,2,1,5,7,6,6,6,6,6,6],
-    [4,4,4,4,4,4,9,7,1,2,2,2,2,1,9,11,4,4,4,4,4,4],
+    [4,4,4,4,4,4,9,7,1,2,2,2,2,1,5,11,4,4,4,4,4,4],
     [1,1,1,1,1,1,5,7,1,2,2,2,2,1,5,7,1,1,1,1,1,1],
     [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
     [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
@@ -61,18 +61,18 @@ class City(Model):
     # --- Horizontal Cars ---
     
     # West Cars
-    py = 6
+    py = 6.5
     px = 20
     for i in range(2):
       px += i
-      car = Car(self, np.array([px, py]), np.array([-0.5,0.0]))
+      car = Car(self, np.array([px, py]),)
       self.space.place_agent(car, car.pos)
       self.schedule.add(car)
       
     # East Cars
-    py = 7
+    py = 7.5
     for px in range(2):
-      car = Car(self, np.array([px, py]), np.array([self.random.randrange(2, 7, 2)/10, 0.0]))
+      car = Car(self, np.array([px, py]),)
       self.space.place_agent(car, car.pos)
       self.schedule.add(car)
 
@@ -82,13 +82,13 @@ class City(Model):
     first = True
     for py in range(4):
       if first:
-        px = 6
+        px = 6.5
         first = False
       else:
-        px = 14
+        px = 14.5
         first = True
       py += 1
-      car = Car(self, np.array([px, py]), np.array([0.0, 0.5]))
+      car = Car(self, np.array([px, py]),)
       self.space.place_agent(car, car.pos)
       self.schedule.add(car)
       
@@ -96,13 +96,13 @@ class City(Model):
     first = True
     for py in range(4):
       if first:
-        px = 7
+        px = 7.5
         first = False
       else:
-        px = 15
+        px = 15.5
         first = True
       py += 1
-      car = Car(self, np.array([px, py]), np.array([0.0, -0.5]))
+      car = Car(self, np.array([px, py]),)
       self.space.place_agent(car, car.pos)
       self.schedule.add(car)
     
@@ -139,25 +139,25 @@ class City(Model):
     # 3 -> west
     
     for tf_coord in traffic_lights_coords_west:      
-      traffic_light = TrafficLight(self, tf_coord, 3)
+      traffic_light = TrafficLight(self, tf_coord, "WEST")
       self.space.place_agent(traffic_light, traffic_light.pos)
       self.schedule.add(traffic_light)
       self.traffic_lights.append(traffic_light)
     
     for tf_coord in traffic_lights_coords_north:      
-      traffic_light = TrafficLight(self, tf_coord, 2)
+      traffic_light = TrafficLight(self, tf_coord, "NORTH")
       self.space.place_agent(traffic_light, traffic_light.pos)
       self.schedule.add(traffic_light)
       self.traffic_lights.append(traffic_light)
 
     for tf_coord in traffic_lights_coords_east:      
-      traffic_light = TrafficLight(self, tf_coord, 1)
+      traffic_light = TrafficLight(self, tf_coord, "EAST")
       self.space.place_agent(traffic_light, traffic_light.pos)
       self.schedule.add(traffic_light)
       self.traffic_lights.append(traffic_light)
       
     for tf_coord in traffic_lights_coords_south:      
-      traffic_light = TrafficLight(self, tf_coord, 0)
+      traffic_light = TrafficLight(self, tf_coord, "SOUTH")
       self.space.place_agent(traffic_light, traffic_light.pos)
       self.schedule.add(traffic_light)
       self.traffic_lights.append(traffic_light)
@@ -186,13 +186,13 @@ def agent_draw(agent):
       color = "Yellow"
     elif agent.state == 2:
       color = "Red"
-    if agent.orientation == 1 or agent.orientation == 3:
+    if agent.orientation == "EAST" or agent.orientation == "WEST":
       return {"Shape": "rect", "w": 0.015, "h": 0.04, "Filled": "true", "Color": color}
     else:
       return {"Shape": "rect", "w": 0.04, "h": 0.015, "Filled": "true", "Color": color}
   
   elif type(agent) == Street:
-    return {"Shape": "rect", "w": 0.05, "h": 0.05, "Filled": "false", "Color": "Gray"}
+    return {"Shape": "rect", "w": 0.1, "h": 0.1, "Filled": "false", "Color": "Gray"}
     
 
 canvas = SimpleCanvas(agent_draw, 500, 500)
