@@ -20,6 +20,8 @@ def getAgents(model, trafficLights, cars):
                     "x": float(agent.pos[0]),
                     "z": float(agent.pos[1]),
                     "orientation": agent.orientation,
+                    "speedX": float(agent.speed[0]),
+                    "speedZ": float(agent.speed[1]),
                 }
             )
         elif isinstance(agent, TrafficLight):

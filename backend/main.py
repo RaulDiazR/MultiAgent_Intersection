@@ -2,9 +2,7 @@ import numpy as np
 from mesa import Agent, Model
 from mesa.space import ContinuousSpace
 from mesa.time import RandomActivation
-from mesa.visualization.ModularVisualization import ModularServer
 from auxFiles.SimpleContinuousModule import SimpleCanvas
-import random
 
 from Car import Car
 from TrafficLight import TrafficLight
@@ -199,7 +197,3 @@ canvas = SimpleCanvas(agent_draw, 500, 500)
 
 
 model_params = {}
-
-server = ModularServer(City, [canvas], "Traffic", model_params)
-server.port = 8522
-server.launch()
