@@ -19,7 +19,6 @@ class Car(Agent):
         self.check_TL = False  # support variable that indicates if a new traffic light has to be found (happens when the car gets ahead of its current traffic light)
 
     def step(self):
-        # print(self.speed)
         car_ahead = self.car_ahead()  # check if theres any car ahead
         if self.pos[self.axis] >= 22: self.pos[self.axis] -= 1
         currCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
@@ -35,8 +34,6 @@ class Car(Agent):
             == self.matrix[math.floor(self.pos[1] - offset)][math.floor(self.pos[0] - offset)]
         ):
             currCell = self.cell
-        else:
-            print("control")
         if currCell != self.cell:
             self.decide_direction()
         if self.check_TL:
@@ -45,7 +42,7 @@ class Car(Agent):
         # if there is no car ahead, it checks if the nearest traffic light is close
         if car_ahead == None:
             braking_speed = self.traffic_light_ahead()
-            if braking_speed != False:
+            if braking_speed:
                 new_speed = self.brake(braking_speed)
             else:
                 new_speed = self.accelerate()
@@ -54,7 +51,7 @@ class Car(Agent):
         else:
             new_speed = self.decelerate(car_ahead)
 
-        speedLimit = 0.3
+        speedLimit = 0.25
 
         if self.movementDir == 1:
             if new_speed >= speedLimit:
@@ -70,7 +67,7 @@ class Car(Agent):
         self.speed = np.array([0.0, 0.0])
         self.speed[self.axis] = new_speed
         
-        new_pos = self.pos + np.array([0.3, 0.3]) * self.speed
+        new_pos = self.pos + self.speed
         self.model.space.move_agent(self, new_pos)
 
     def car_ahead(self):
@@ -95,7 +92,7 @@ class Car(Agent):
         return None
 
     def accelerate(self):
-        return self.speed[self.axis] + (0.025 * self.movementDir)
+        return self.speed[self.axis] + (0.01 * self.movementDir)
 
     def decelerate(self, car_ahead):
         return car_ahead.speed[self.axis] - (0.05 * self.movementDir)
@@ -123,7 +120,7 @@ class Car(Agent):
                     and distance > 0.4
                 ):
                     # if theres a yellow or red light close only decelerates the following amount
-                    return 0.05 if self.speed[self.axis] > 0.5 else 0.0
+                    return 0.01 if self.speed[self.axis] > 0.1 else 0.0
                 elif (
                     (self.traffic_light.state == 1 or self.traffic_light.state == 2)
                     and distance < 0.4
@@ -144,7 +141,7 @@ class Car(Agent):
                     and distance > -4.0
                     and distance < -0.4
                 ):
-                    return -0.05 if self.speed[self.axis] < -0.5 else 0.0
+                    return -0.01 if self.speed[self.axis] < -0.1 else 0.0
                 elif (
                     (self.traffic_light.state == 1 or self.traffic_light.state == 2)
                     and distance > -0.4
@@ -171,7 +168,7 @@ class Car(Agent):
                 # the correct traffic light based on the fact that the traffic light corresponding to each car should not
                 # be further than 1.5 of diantce in said axis
                 axisDifference = abs(traffic_light.pos[i] - self.pos[i])
-                if distance < min_distance and distance > 0.0 and axisDifference < 3.5:
+                if distance < min_distance and distance > 0.0 and axisDifference < 5.0:
                     min_distance = distance
                     nearest_traffic_light = traffic_light
 
@@ -186,8 +183,6 @@ class Car(Agent):
 
     def decide_direction(self):
         newCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
-        print("newCell", newCell)
-        print(self.pos)
         # Decide orientation based on type of cell
         if newCell == 4:
             orientation = "EAST"
@@ -198,7 +193,10 @@ class Car(Agent):
         elif newCell == 7:
             orientation = "NORTH"
         elif newCell == 8:
-            orientation = self.randomDirection("WEST", "SOUTH")
+            if self.cell == 10:
+              orientation = "WEST"
+            else:  
+              orientation = self.randomDirection("WEST", "SOUTH")
         elif newCell == 9:
             if self.cell == 8:
                 orientation = "SOUTH"
@@ -216,7 +214,6 @@ class Car(Agent):
                 orientation = self.randomDirection("NORTH", "EAST")
         else:
             orientation = "NORTH"
-        print("cell", self.cell)
         self.cell = newCell
         
         self.orientate(orientation)
