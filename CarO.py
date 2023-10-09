@@ -36,11 +36,12 @@ obj.generate()
 
 class CarO:
     
-    def __init__(self, dim, vel):
+    def __init__(self, dim, vel, pos):
         
         self.DimBoard = dim
         #Se inicializa una posicion aleatoria en el tablero
-        self.Position = [-35, 0.1, -109]
+        print(pos)
+        self.Position = [pos[0], 0.1, pos[1]]
         #self.Position[0]= random.randint(-dim, dim)
         #Inicializar las coordenadas (x,y,z) del cubo en el tablero
         #almacenandolas en el vector Position
@@ -73,89 +74,89 @@ class CarO:
 
     def update(self, x, z, matrix):
 
-        if self.Position[0] >= self.DimBoard:
-            self.Position[0] -= 210
-            x = self.Position[0]
-            #self.Position[0] = self.DimBoard
-            #self.Direction[0] *= -1
-        elif self.Position[0] <= -self.DimBoard:
-            self.Position[0] += 210
-            x = self.Position[0]
-            #self.Position[0] = -self.DimBoard
-            #self.Direction[0] *= -1
+        # if self.Position[0] >= self.DimBoard:
+        #     self.Position[0] -= 210
+        #     x = self.Position[0]
+        #     #self.Position[0] = self.DimBoard
+        #     #self.Direction[0] *= -1
+        # elif self.Position[0] <= -self.DimBoard:
+        #     self.Position[0] += 210
+        #     x = self.Position[0]
+        #     #self.Position[0] = -self.DimBoard
+        #     #self.Direction[0] *= -1
             
-        if self.Position[2] >= self.DimBoard:
-            self.Position[2] -= 210
-            z = self.Position[2]
-            #self.Position[2] = self.DimBoard
-            #self.Direction[2] *= -1
-        elif self.Position[2] <= -self.DimBoard:
-            self.Position[2] += 210
-            z = self.Position[2]
-            #self.Position[2] = -self.DimBoard
-            #self.Direction[2] *= -1
-        #print(self.Position[0])
-        #print(self.Position[2])
+        # if self.Position[2] >= self.DimBoard:
+        #     self.Position[2] -= 210
+        #     z = self.Position[2]
+        #     #self.Position[2] = self.DimBoard
+        #     #self.Direction[2] *= -1
+        # elif self.Position[2] <= -self.DimBoard:
+        #     self.Position[2] += 210
+        #     z = self.Position[2]
+        #     #self.Position[2] = -self.DimBoard
+        #     #self.Direction[2] *= -1
+        # #print(self.Position[0])
+        # #print(self.Position[2])
 
-        xm = int((math.floor(x) + 110) / 10)
-        zm = int((math.floor(z) + 110) / 10)
+        # xm = int((math.floor(x) + 110) / 10)
+        # zm = int((math.floor(z) + 110) / 10)
 
-        celda = matrix[zm][xm]
+        # celda = matrix[zm][xm]
 
-        if (celda != self.lastCell):
-            self.lastCell = celda
-            if celda == 3:
-                self.Direction[2] = 1
-                self.Direction[0] = 0
-            elif celda == 4:
-                self.Direction[0] = 1
-                self.Direction[2] = 0
-            elif celda == 5:
-                self.Direction[2] = -1
-                self.Direction[0] = 0
-            elif celda == 6:
-                self.Direction[0] = -1
-                self.Direction[2] = 0
-            elif celda == 7:
-                if self.Direction[0] == 1:
-                    self.Direction[0] = 0
-                    self.Direction[2] = -1
-                else:
-                    if matrix[xm][zm - 1] == 6:
-                        if random.randint(0,1) == 0:
-                            self.Direction[2] = 0
-                            self.Direction[0] = -1
-            elif celda == 8:
-                if self.Direction[0] == -1:
-                    self.Direction[0] = 0
-                    self.Direction[2] = 1
-                else:
-                    if matrix[xm][zm + 1] == 4:
-                        if random.randint(0,1) == 0:
-                            self.Direction[2] = 0
-                            self.Direction[0] = 1
-            elif celda == 9:
-                if self.Direction[2] == -1:
-                    if matrix[xm][zm - 1] == 6:
-                        self.Direction[2] = 0
-                        self.Direction[0]= -1
-                elif self.Direction[2] == 1:
-                    if matrix[xm][zm + 1] == 4:
-                        self.Direction[2] = 0
-                        self.Direction[0] = 1
-                elif self.Direction[0] == -1:
-                    if matrix[xm - 1][zm] == 3:
-                        self.Direction[0] = 0
-                        self.Direction[2] = 1
-                elif self.Direction[0] == -1:
-                    if matrix[xm + 1][zm] == 5:
-                        self.Direction[0] = 0
-                        self.Direction[2] = -1
+        # if (celda != self.lastCell):
+        #     self.lastCell = celda
+        #     if celda == 3:
+        #         self.Direction[2] = 1
+        #         self.Direction[0] = 0
+        #     elif celda == 4:
+        #         self.Direction[0] = 1
+        #         self.Direction[2] = 0
+        #     elif celda == 5:
+        #         self.Direction[2] = -1
+        #         self.Direction[0] = 0
+        #     elif celda == 6:
+        #         self.Direction[0] = -1
+        #         self.Direction[2] = 0
+        #     elif celda == 7:
+        #         if self.Direction[0] == 1:
+        #             self.Direction[0] = 0
+        #             self.Direction[2] = -1
+        #         else:
+        #             if matrix[xm][zm - 1] == 6:
+        #                 if random.randint(0,1) == 0:
+        #                     self.Direction[2] = 0
+        #                     self.Direction[0] = -1
+        #     elif celda == 8:
+        #         if self.Direction[0] == -1:
+        #             self.Direction[0] = 0
+        #             self.Direction[2] = 1
+        #         else:
+        #             if matrix[xm][zm + 1] == 4:
+        #                 if random.randint(0,1) == 0:
+        #                     self.Direction[2] = 0
+        #                     self.Direction[0] = 1
+        #     elif celda == 9:
+        #         if self.Direction[2] == -1:
+        #             if matrix[xm][zm - 1] == 6:
+        #                 self.Direction[2] = 0
+        #                 self.Direction[0]= -1
+        #         elif self.Direction[2] == 1:
+        #             if matrix[xm][zm + 1] == 4:
+        #                 self.Direction[2] = 0
+        #                 self.Direction[0] = 1
+        #         elif self.Direction[0] == -1:
+        #             if matrix[xm - 1][zm] == 3:
+        #                 self.Direction[0] = 0
+        #                 self.Direction[2] = 1
+        #         elif self.Direction[0] == -1:
+        #             if matrix[xm + 1][zm] == 5:
+        #                 self.Direction[0] = 0
+        #                 self.Direction[2] = -1
 
         
                     
-        self.Position[0] += self.Direction[0]
-        self.Position[2] += self.Direction[2]
+        self.Position[0] = x
+        self.Position[2] = z
 
     def draw(self):
         glPushMatrix()

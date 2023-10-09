@@ -1,18 +1,18 @@
 import pygame
 from pygame.locals import *
-
 # Cargamos las bibliotecas de OpenGL
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
-
 # Se carga el archivo de la clase Cubo
 import sys
 sys.path.append('..')
 from CarO import CarO
 from objloader import *
-
 import math
+
+import requests
+import json
 
 screen_width = 500
 screen_height = 500
@@ -41,6 +41,13 @@ Z_MAX=500
 
 #Arreglo para el manejo de texturas
 
+
+URL_BASE = "http://localhost:5000"
+r = requests.post(URL_BASE+ "/games", allow_redirects=False)
+LOCATION = r.headers["Location"]
+
+carsMesa = json.loads(r.headers["cars"])
+
 #Dimension del plano
 DimBoard = 110
 
@@ -60,7 +67,14 @@ pygame.init()
 
 #cubo = Cubo(DimBoard, 1.0)
 carros = []
-ncarros = 1
+ncarros = len(carsMesa)
+
+carrosCords = []
+
+# Se guardan las posiciones iniciales de los robots
+for car in carsMesa:
+    x, z = car['x']*10 - DimBoard, car['z']*10 - DimBoard
+    carrosCords.append((x,z))
         
 matrix = [
     [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
@@ -114,7 +128,7 @@ def Init():
 
     
     for i in range(ncarros):
-        carros.append(CarO(DimBoard, 1))
+        carros.append(CarO(DimBoard, 1, carrosCords[i]))
 
 def drawBuilding(x, z, obj):
     glPushMatrix()
@@ -130,11 +144,14 @@ def drawBuilding(x, z, obj):
     glPopMatrix()
 
 def display():
+    r = requests.get(URL_BASE+LOCATION)
+    carsMesa = json.loads(r.headers["cars"])
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     #Se dibujan los carros
-    for obj in carros:
-        obj.draw()
-        obj.update(obj.Position[0], obj.Position[2], matrix)
+    for i in range(len(carros)):
+        print(carsMesa[i]['x']*10 - DimBoard, carsMesa[i]['z']*10 - DimBoard)
+        carros[i].draw()
+        carros[i].update(carsMesa[i]['x']*10 - DimBoard, carsMesa[i]['z']*10 - DimBoard, matrix)
 
     #building 1 test
     drawBuilding(-90, 0, buildObj)
@@ -190,16 +207,6 @@ def display():
     glEnd()
 
     
-
-    
-
-
-
-    
-    
-
-    
-
 done = False
 Init()
 while not done:
