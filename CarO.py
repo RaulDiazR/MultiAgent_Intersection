@@ -36,7 +36,7 @@ obj.generate()
 
 class CarO:
     
-    def __init__(self, dim, vel, pos):
+    def __init__(self, dim, vel, pos, dir):
         
         self.DimBoard = dim
         #Se inicializa una posicion aleatoria en el tablero
@@ -48,6 +48,8 @@ class CarO:
         #...
         #Se inicializa un vector de direccion aleatorio
         self.Direction = [0, 0, -1]
+        self.Direction[0] = dir[0]
+        self.Direction[2] = dir[1]
         
         #El vector aleatorio debe de estar sobre el plano XZ (la altura en Y debe ser fija)
         #Se normaliza el vector de direccion
@@ -72,7 +74,7 @@ class CarO:
 
         
 
-    def update(self, x, z, matrix):
+    def update(self, x, z, dir, matrix):
 
         # if self.Position[0] >= self.DimBoard:
         #     self.Position[0] -= 210
@@ -157,6 +159,9 @@ class CarO:
                     
         self.Position[0] = x
         self.Position[2] = z
+        
+        self.Direction[0] = dir[0]
+        self.Direction[2] = dir[1]
 
     def draw(self):
         glPushMatrix()

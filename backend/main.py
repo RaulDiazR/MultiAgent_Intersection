@@ -61,7 +61,7 @@ class City(Model):
     # West Cars
     py = 6.5
     px = 20
-    for i in range(0):
+    for i in range(1):
       px += i
       car = Car(self, np.array([px, py]),)
       self.space.place_agent(car, car.pos)
@@ -78,7 +78,7 @@ class City(Model):
     
     # South Cars
     first = True
-    for py in range(0):
+    for py in range(2):
       if first:
         px = 6.5
         first = False
@@ -92,7 +92,7 @@ class City(Model):
       
     # North Cars
     first = True
-    for py in range(0):
+    for py in range(2):
       if first:
         px = 7.5
         first = False

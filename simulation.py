@@ -74,32 +74,35 @@ carrosCords = []
 # Se guardan las posiciones iniciales de los robots
 for car in carsMesa:
     x, z = car['x']*10 - DimBoard, car['z']*10 - DimBoard
-    carrosCords.append((x,z))
+    carDir = (car['speedX'], car['speedZ'])
+    carrosCords.append(((x,z), carDir))
+    
         
 matrix = [
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [1,1,1,1,1,1,5,3,1,2,2,2,2,1,5,3,1,1,1,1,1,1],
-    [6,6,6,6,6,6,7,3,1,2,2,2,2,1,5,8,6,6,6,6,6,6],
-    [4,4,4,4,4,4,7,3,1,2,2,2,2,1,5,8,4,4,4,4,4,4],
-    [1,1,1,1,1,1,5,3,1,2,2,2,2,1,5,3,1,1,1,1,1,1],
-    [2,2,2,2,2,1,5,3,1,2,2,2,2,1,5,3,1,2,2,2,2,2],
-    [2,2,2,2,2,1,5,3,1,2,2,2,2,1,5,3,1,2,2,2,2,2],
-    [2,2,2,2,2,1,5,3,1,2,2,2,2,1,5,3,1,2,2,2,2,2],
-    [2,2,2,2,2,1,5,3,1,2,2,2,2,1,5,3,1,2,2,2,2,2],
-    [1,1,1,1,1,1,5,3,1,1,1,1,1,1,5,3,1,1,1,1,1,1],
-    [6,6,6,6,6,6,9,9,6,6,6,6,6,6,9,9,6,6,6,6,6,6],
-    [4,4,4,4,4,4,9,9,4,4,4,4,4,4,9,9,4,4,4,4,4,4],
-    [1,1,1,1,1,1,5,3,1,1,1,1,1,1,5,3,1,1,1,1,1,1],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3],
-    [3,3,3,3,3,1,5,3,1,2,2,2,2,1,5,3,1,3,3,3,3,3]
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [1,1,1,1,1,1,5,7,1,1,1,1,1,1,5,7,1,1,1,1,1,1],
+    [6,6,6,6,6,6,8,10,6,6,6,6,6,6,8,10,6,6,6,6,6,6],
+    [4,4,4,4,4,4,9,11,4,4,4,4,4,4,9,11,4,4,4,4,4,4],
+    [1,1,1,1,1,1,5,7,1,2,2,2,2,1,5,7,1,1,1,1,1,1],
+    [2,2,2,2,2,1,5,7,1,2,2,2,2,1,5,7,1,2,2,2,2,2],
+    [2,2,2,2,2,1,5,7,1,2,2,2,2,1,5,7,1,2,2,2,2,2],
+    [2,2,2,2,2,1,5,7,1,2,2,2,2,1,5,7,1,2,2,2,2,2],
+    [2,2,2,2,2,1,5,7,1,2,2,2,2,1,5,7,1,2,2,2,2,2],
+    [1,1,1,1,1,1,5,7,1,2,2,2,2,1,5,7,1,1,1,1,1,1],
+    [6,6,6,6,6,6,8,7,1,2,2,2,2,1,5,7,6,6,6,6,6,6],
+    [4,4,4,4,4,4,9,7,1,2,2,2,2,1,5,11,4,4,4,4,4,4],
+    [1,1,1,1,1,1,5,7,1,2,2,2,2,1,5,7,1,1,1,1,1,1],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3],
+    [3,3,3,3,3,1,5,7,1,2,2,2,2,1,5,7,1,3,3,3,3,3]
     ]
+
 
 def lookAt():
     glLoadIdentity()
@@ -128,7 +131,7 @@ def Init():
 
     
     for i in range(ncarros):
-        carros.append(CarO(DimBoard, 1, carrosCords[i]))
+        carros.append(CarO(DimBoard, 1, carrosCords[i][0], carrosCords[i][1]))
 
 def drawBuilding(x, z, obj):
     glPushMatrix()
@@ -151,21 +154,25 @@ def display():
     for i in range(len(carros)):
         print(carsMesa[i]['x']*10 - DimBoard, carsMesa[i]['z']*10 - DimBoard)
         carros[i].draw()
-        carros[i].update(carsMesa[i]['x']*10 - DimBoard, carsMesa[i]['z']*10 - DimBoard, matrix)
+        carDir = (carsMesa[i]['speedX'], carsMesa[i]['speedZ'])
+        carros[i].update(carsMesa[i]['x']*10 - DimBoard, carsMesa[i]['z']*10 - DimBoard, carDir, matrix)
 
     #building 1 test
     drawBuilding(-90, 0, buildObj)
     drawBuilding(90, 0, buildObj)
         
     #Se dibuja el plano gris
+    
+    # Calle horizontal completa superior
     glColor3f(0, 0, 0)
     glBegin(GL_QUADS)
-    glVertex3d(-DimBoard, 0.1, 50)
-    glVertex3d(DimBoard, 0.1, 50)
-    glVertex3d(DimBoard, 0.1, 30)
-    glVertex3d(-DimBoard, 0.1, 30)
+    glVertex3d(-DimBoard, 0.1, -50)
+    glVertex3d(DimBoard, 0.1, -50)
+    glVertex3d(DimBoard, 0.1, -30)
+    glVertex3d(-DimBoard, 0.1, -30)
     glEnd()
 
+    # Calle vertical completa derecha
     glColor3f(0, 0, 0)
     glBegin(GL_QUADS)
     glVertex3d(-50, 0.1, -DimBoard)
@@ -174,6 +181,7 @@ def display():
     glVertex3d(-30, 0.1, -DimBoard)
     glEnd()
 
+    # Calle vertical completa derecha
     glColor3f(0, 0, 0)
     glBegin(GL_QUADS)
     glVertex3d(50, 0.1, -DimBoard)
@@ -181,21 +189,23 @@ def display():
     glVertex3d(30, 0.1, DimBoard)
     glVertex3d(30, 0.1, -DimBoard)
     glEnd()
-
+    
+    # Calle horizontal parcial izquierda
     glColor3f(0, 0, 0)
     glBegin(GL_QUADS)
-    glVertex3d(-DimBoard, 0.1, -50)
-    glVertex3d(-30, 0.1, -50)
-    glVertex3d(-30, 0.1, -30)
-    glVertex3d(-DimBoard, 0.1, -30)
+    glVertex3d(-DimBoard, 0.1, 50)
+    glVertex3d(-30, 0.1, 50)
+    glVertex3d(-30, 0.1, 30)
+    glVertex3d(-DimBoard, 0.1, 30)
     glEnd()
 
+    # Calle horizontal parcial derecha
     glColor3f(0, 0, 0)
     glBegin(GL_QUADS)
-    glVertex3d(30, 0.1, -50)
-    glVertex3d(DimBoard, 0.1, -50)
-    glVertex3d(DimBoard, 0.1, -30)
-    glVertex3d(30, 0.1, -30)
+    glVertex3d(30, 0.1, 50)
+    glVertex3d(DimBoard, 0.1, 50)
+    glVertex3d(DimBoard, 0.1, 30)
+    glVertex3d(30, 0.1, 30)
     glEnd()
 
     glColor3f(0.3, 0.3, 0.3)
@@ -237,6 +247,6 @@ while not done:
     display()
 
     pygame.display.flip()
-    pygame.time.wait(10)
+    pygame.time.wait(0)
 
 pygame.quit()
