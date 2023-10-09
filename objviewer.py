@@ -10,6 +10,7 @@ from OpenGL.GLUT import *
 import sys
 sys.path.append('..')
 from CarO import CarO
+from objloader import *
 
 import math
 
@@ -47,7 +48,15 @@ DimBoard = 110
 theta = 0.0
 radius = 300
 
+buildObj = OBJ("./Objetos3D/Building/Rv_Building_3.obj", swapyz=True)
+buildObj.generate()
+
+#houseObj = OBJ("./Objetos3D/House/house.obj", swapyz=True)
+#houseObj.generate()
+
 pygame.init()
+
+
 
 #cubo = Cubo(DimBoard, 1.0)
 carros = []
@@ -107,12 +116,29 @@ def Init():
     for i in range(ncarros):
         carros.append(CarO(DimBoard, 1))
 
+def drawBuilding(x, z, obj):
+    glPushMatrix()
+    glTranslate(x, 0.1, z)
+    glEnableClientState(GL_VERTEX_ARRAY)
+    glEnableClientState(GL_COLOR_ARRAY)
+    glRotate(270,1,0,0)
+    scaleVal = 2
+    glScalef(scaleVal,scaleVal,scaleVal)
+    obj.render()
+    glDisableClientState(GL_VERTEX_ARRAY)
+    glDisableClientState(GL_COLOR_ARRAY)
+    glPopMatrix()
+
 def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     #Se dibujan los carros
     for obj in carros:
         obj.draw()
         obj.update(obj.Position[0], obj.Position[2], matrix)
+
+    #building 1 test
+    drawBuilding(-90, 0, buildObj)
+    drawBuilding(90, 0, buildObj)
         
     #Se dibuja el plano gris
     glColor3f(0, 0, 0)
