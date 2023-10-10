@@ -25,10 +25,9 @@ class Car(Agent):
         carAhead = self.carAhead()  # check if theres any car ahead
         currCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
         if self.pos[self.axis] >= 22: self.pos[self.axis] -= 1
-        if self.checkTurn(currCell, self.pos[0], self.pos[1]): #check if it needs to turn
-            newOrientation = self.decideDirection(currCell)
-            self.orientate(newOrientation)
-            self.orientation = newOrientation
+        if self.checkTurn(currCell, self.pos[0], self.pos[1]) and self.turn != "": #check if it needs to turn
+            self.orientate(self.turn)
+            self.orientation = self.turn
             self.cell = currCell
             self.turn = ""
         else: #Check if there will be a turn in the future
@@ -211,22 +210,22 @@ class Car(Agent):
         elif newCell == 7:
             orientation = "NORTH"
         elif newCell == 8:
-            if self.cell == 10:
+            if self.cell == 6:
               orientation = "WEST"
             else:  
               orientation = self.randomDirection("WEST", "SOUTH")
         elif newCell == 9:
-            if self.cell == 8:
+            if self.cell == 5:
                 orientation = "SOUTH"
             else:
                 orientation = self.randomDirection("SOUTH", "EAST")
         elif newCell == 10:
-            if self.cell == 11:
+            if self.cell == 7:
                 orientation = "NORTH"
             else:
                 orientation = self.randomDirection("NORTH", "WEST")
         elif newCell == 11:
-            if self.cell == 9:
+            if self.cell == 4:
                 orientation = "EAST"
             else:
                 orientation = self.randomDirection("NORTH", "EAST")
