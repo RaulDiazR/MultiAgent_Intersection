@@ -23,8 +23,8 @@ ZFAR=3000
 #Variables para definir la posicion del observador
 #gluLookAt(EYE_X,EYE_Y,EYE_Z,CENTER_X,CENTER_Y,CENTER_Z,UP_X,UP_Y,UP_Z)
 EYE_X=0.0
-EYE_Y=200.0
-EYE_Z=0.01
+EYE_Y=200.0 #150
+EYE_Z= 0.01#50
 CENTER_X=0
 CENTER_Y=0
 CENTER_Z=0
@@ -48,11 +48,21 @@ DimBoard = 110
 theta = 0.0
 radius = 300
 
+# Arreglo para el manejo de texturas
+textures = []
+filenames = ["pasto.bmp", "agua.bmp", "white.bmp"]
+
 buildObj = OBJ("./Objetos3D/Building/Rv_Building_3.obj", swapyz=True)
 buildObj.generate()
 
-#houseObj = OBJ("./Objetos3D/House/house.obj", swapyz=True)
-#houseObj.generate()
+houseObj = OBJ("./Objetos3D/Bambo_House/Bambo_House/Bambo_House_obj/Bambo_House.obj", swapyz=True)
+houseObj.generate()
+
+treeObj = OBJ("./Objetos3D/low_poly_tree/Lowpoly_tree_sample.obj", swapyz=True)
+treeObj.generate()
+
+#trafficObj = OBJ("./Objetos3D/Trafficlight/Models and Textures/trafficlight.obj", swapyz=False)
+#trafficObj.generate()
 
 pygame.init()
 
@@ -93,9 +103,21 @@ def lookAt():
     newX = EYE_X * math.cos(rad) + EYE_Z * math.sin(rad)
     newZ = -EYE_X * math.sin(rad) + EYE_Z * math.cos(rad)
     gluLookAt(newX,EYE_Y,newZ,CENTER_X,CENTER_Y,CENTER_Z,UP_X,UP_Y,UP_Z)
-    
 
- 
+def Texturas(filepath):
+    textures.append(glGenTextures(1))
+    id = len(textures) - 1
+    glBindTexture(GL_TEXTURE_2D, textures[id])
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+    image = pygame.image.load(filepath).convert()
+    w, h = image.get_rect().size
+    image_data = pygame.image.tostring(image, "RGBA")
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data)
+    glGenerateMipmap(GL_TEXTURE_2D)
+
 def Init():
     screen = pygame.display.set_mode(
         (screen_width, screen_height), DOUBLEBUF | OPENGL)
@@ -112,22 +134,114 @@ def Init():
     glEnable(GL_DEPTH_TEST)
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
+    for i in filenames:
+        Texturas(i)
     
     for i in range(ncarros):
         carros.append(CarO(DimBoard, 1))
 
-def drawBuilding(x, z, obj):
+def drawBuilding(x, z, t, sx, sz, sy, obj):
     glPushMatrix()
     glTranslate(x, 0.1, z)
     glEnableClientState(GL_VERTEX_ARRAY)
     glEnableClientState(GL_COLOR_ARRAY)
     glRotate(270,1,0,0)
-    scaleVal = 2
-    glScalef(scaleVal,scaleVal,scaleVal)
+    glRotate(t,0,0,1)
+    scaleVal = 1
+    glScalef(1*sx, 1*sz, 1*sy)
     obj.render()
     glDisableClientState(GL_VERTEX_ARRAY)
     glDisableClientState(GL_COLOR_ARRAY)
     glPopMatrix()
+
+def drawGrass():
+    glPushMatrix()
+    #glScaled(3, 3, 3)
+    glColor3f(1.0, 1.0, 1.0)
+        
+    glEnable(GL_TEXTURE_2D)
+    glBindTexture(GL_TEXTURE_2D, textures[0])
+        
+    glBegin(GL_QUADS)
+        
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(-DimBoard, 0.1, 20)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(-60, 0.1, 20)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(-60, 0.1, -20)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(-DimBoard, 0.1, -20)
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(60, 0.1, 20)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(DimBoard, 0.1, 20)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(DimBoard, 0.1, -20)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(60, 0.1, -20)
+
+    glEnd()
+    glDisable(GL_TEXTURE_2D)
+            
+    glPopMatrix()
+
+def drawWater():
+    glPushMatrix()
+    #glScaled(3, 3, 3)
+    glColor3f(1.0, 1.0, 1.0)
+        
+    glEnable(GL_TEXTURE_2D)
+    glBindTexture(GL_TEXTURE_2D, textures[1])
+        
+    glBegin(GL_QUADS)
+        
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(-DimBoard, 0.1, -60)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(-60, 0.1, -60)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(-60, 0.1, -DimBoard)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(-DimBoard, 0.1, -DimBoard)
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(60, 0.1, -60)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(DimBoard, 0.1, -60)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(DimBoard, 0.1, -DimBoard)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(60, 0.1, -DimBoard)
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(-DimBoard, 0.1, DimBoard)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(-60, 0.1, DimBoard)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(-60, 0.1, 60)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(-DimBoard, 0.1, 60)
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(60, 0.1, DimBoard)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(DimBoard, 0.1, DimBoard)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(DimBoard, 0.1, 60)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(60, 0.1, 60)
+
+    glEnd()
+
+    glBindTexture(GL_TEXTURE_2D, textures[2])
+    glDisable(GL_TEXTURE_2D)
+            
+    glPopMatrix()
+
+def drawTrees():
+    drawBuilding(-60, -20, 0, 0.5, 0.5, 0.5, treeObj)
 
 def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -136,17 +250,26 @@ def display():
         obj.draw()
         obj.update(obj.Position[0], obj.Position[2], matrix)
 
-    #building 1 test
-    drawBuilding(-90, 0, buildObj)
-    drawBuilding(90, 0, buildObj)
-        
-    #Se dibuja el plano gris
+    #Se dibujan el pasto
+    drawGrass()
+
+    #Se dibuja el agua
+    drawWater()
+
+    #Se dibujan buildings
+    drawBuilding(0, 30, 90, 2.5, 2, 2, buildObj)
+    drawBuilding(0, -75, 90, 1, 2, 2, buildObj)
+
+    #Se dibujan arboles
+    drawTrees()
+
+    #Se dibuja el plano gris y las calles
     glColor3f(0, 0, 0)
     glBegin(GL_QUADS)
-    glVertex3d(-DimBoard, 0.1, 50)
-    glVertex3d(DimBoard, 0.1, 50)
-    glVertex3d(DimBoard, 0.1, 30)
-    glVertex3d(-DimBoard, 0.1, 30)
+    glVertex3d(-DimBoard, 0.1, -50)
+    glVertex3d(DimBoard, 0.1, -50)
+    glVertex3d(DimBoard, 0.1, -30)
+    glVertex3d(-DimBoard, 0.1, -30)
     glEnd()
 
     glColor3f(0, 0, 0)
@@ -167,18 +290,18 @@ def display():
 
     glColor3f(0, 0, 0)
     glBegin(GL_QUADS)
-    glVertex3d(-DimBoard, 0.1, -50)
-    glVertex3d(-30, 0.1, -50)
-    glVertex3d(-30, 0.1, -30)
-    glVertex3d(-DimBoard, 0.1, -30)
+    glVertex3d(-DimBoard, 0.1, 50)
+    glVertex3d(-30, 0.1, 50)
+    glVertex3d(-30, 0.1, 30)
+    glVertex3d(-DimBoard, 0.1, 30)
     glEnd()
 
     glColor3f(0, 0, 0)
     glBegin(GL_QUADS)
-    glVertex3d(30, 0.1, -50)
-    glVertex3d(DimBoard, 0.1, -50)
-    glVertex3d(DimBoard, 0.1, -30)
-    glVertex3d(30, 0.1, -30)
+    glVertex3d(30, 0.1, 50)
+    glVertex3d(DimBoard, 0.1, 50)
+    glVertex3d(DimBoard, 0.1, 30)
+    glVertex3d(30, 0.1, 30)
     glEnd()
 
     glColor3f(0.3, 0.3, 0.3)
