@@ -261,7 +261,19 @@ def drawWater():
     glPopMatrix()
 
 def drawTrees():
-    drawBuilding(-60, -20, 0, 0.5, 0.5, 0.5, treeObj)
+    #Arboles de la derecha
+    drawBuilding(-65, -15, 0, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(-70, 5, 110, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(-100, -15, 40, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(-95, 15, 75, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(-90, -3, 90, 0.5, 0.5, 0.5, treeObj)
+
+    #Arboles de la Izquierda
+    drawBuilding(70, -10, 0, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(80, 10, 90, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(90, -10, 20, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(100, 10, 160, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(65, 5, 100, 0.5, 0.5, 0.5, treeObj)
 
 def display():
     r = requests.get(URL_BASE+LOCATION)
@@ -280,8 +292,8 @@ def display():
     drawWater()
 
     #Se dibujan buildings
-    drawBuilding(0, 30, 90, 2.5, 2, 2, buildObj)
-    drawBuilding(0, -75, 90, 1, 2, 2, buildObj)
+    drawBuilding(0, 40, 90, 3.3, 2, 2, buildObj)
+    drawBuilding(0, -80, 270, 1.3, 2, 3, buildObj)
 
     #Se dibujan arboles
     drawTrees()
