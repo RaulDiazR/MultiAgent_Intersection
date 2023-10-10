@@ -22,6 +22,7 @@ def getAgents(model, trafficLights, cars):
                     "orientation": agent.orientation,
                     "speedX": float(agent.speed[0]),
                     "speedZ": float(agent.speed[1]),
+                    "turn": agent.turn,
                 }
             )
         elif isinstance(agent, TrafficLight):
@@ -68,7 +69,7 @@ def queryState(id):
     getAgents(model, trafficLights, cars)
     return (
         "ok",
-        500,
+        200,
         {
             "Location": f"/games/{id}",
             "cars": json.dumps(cars),

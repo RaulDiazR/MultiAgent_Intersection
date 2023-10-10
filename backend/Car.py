@@ -12,35 +12,40 @@ class Car(Agent):
         self.pos = pos  # current position
         self.orientation = ""
         self.matrix = model.matrix
-        self.cell = 0
-        self.decide_direction()
+        newCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
+        orientation = self.decideDirection(newCell)
+        self.orientate(orientation)
+        self.cell = newCell
+        self.turn = ""
 
-        self.traffic_light = self.find_nearest_traffic_light()
+        self.traffic_light = self.findNearestTrafficLight()
         self.check_TL = False  # support variable that indicates if a new traffic light has to be found (happens when the car gets ahead of its current traffic light)
 
     def step(self):
-        car_ahead = self.car_ahead()  # check if theres any car ahead
-        if self.pos[self.axis] >= 22: self.pos[self.axis] -= 1
+        carAhead = self.carAhead()  # check if theres any car ahead
         currCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
-        offset = 0.4
-        if not (
-            self.pos[0] + offset < len(self.matrix)
-            and self.pos[1] + offset < len(self.matrix)
-            and self.pos[0] - offset > 0
-            and self.pos[1] - offset > 0
-            and currCell
-            == self.matrix[math.floor(self.pos[1] + offset)][math.floor(self.pos[0] + offset)]
-            and currCell
-            == self.matrix[math.floor(self.pos[1] - offset)][math.floor(self.pos[0] - offset)]
-        ):
-            currCell = self.cell
-        if currCell != self.cell:
-            self.decide_direction()
-        if self.check_TL:
-            self.traffic_light = self.find_nearest_traffic_light()
+        if self.pos[self.axis] >= 22: self.pos[self.axis] -= 1
+        if self.checkTurn(currCell, self.pos[0], self.pos[1]): #check if it needs to turn
+            newOrientation = self.decideDirection(currCell)
+            self.orientate(newOrientation)
+            self.orientation = newOrientation
+            self.cell = currCell
+            self.turn = ""
+        else: #Check if there will be a turn in the future
+            stepsAhead = 2
+            futurePos0 = self.pos[0]+self.speed[0]*stepsAhead
+            futurePos1 = self.pos[1]+self.speed[1]*stepsAhead
+            if not self.model.space.out_of_bounds((futurePos0, futurePos1)):
+                aheadCell = self.matrix[math.floor(futurePos1)][math.floor(futurePos0)]
+                if self.checkTurn(aheadCell, futurePos0, futurePos1):
+                    turnDirection = self.decideDirection(aheadCell)
+                    self.turn = turnDirection if turnDirection != self.orientation else ""
 
+
+        if self.check_TL:
+            self.traffic_light = self.findNearestTrafficLight()
         # if there is no car ahead, it checks if the nearest traffic light is close
-        if car_ahead == None:
+        if carAhead == None:
             braking_speed = self.traffic_light_ahead()
             if braking_speed:
                 new_speed = self.brake(braking_speed)
@@ -49,7 +54,7 @@ class Car(Agent):
 
         # decelerates if there is a car ahead
         else:
-            new_speed = self.decelerate(car_ahead)
+            new_speed = self.decelerate(carAhead)
 
         speedLimit = 0.25
 
@@ -70,7 +75,7 @@ class Car(Agent):
         new_pos = self.pos + self.speed
         self.model.space.move_agent(self, new_pos)
 
-    def car_ahead(self):
+    def carAhead(self):
         # checks if there is a car ahead, in said case it decelerates so it doesn´t crash
         radius = 1 if self.movementDir == 1 else 2
         for neighbor in self.model.space.get_neighbors(self.pos, radius, False):
@@ -91,11 +96,25 @@ class Car(Agent):
                 return neighbor
         return None
 
+    def checkTurn(self, currCell, pos0, pos1):
+        offset = 0.4
+        return (
+            pos0 + offset < len(self.matrix)
+            and pos1 + offset < len(self.matrix)
+            and pos0 - offset > 0
+            and pos1 - offset > 0
+            and currCell
+            == self.matrix[math.floor(pos1 + offset)][math.floor(pos0 + offset)]
+            and currCell
+            == self.matrix[math.floor(pos1 - offset)][math.floor(pos0 - offset)]
+        ) and currCell != self.cell
+
+
     def accelerate(self):
         return self.speed[self.axis] + (0.01 * self.movementDir)
 
-    def decelerate(self, car_ahead):
-        return car_ahead.speed[self.axis] - (0.05 * self.movementDir)
+    def decelerate(self, carAhead):
+        return carAhead.speed[self.axis] - (0.05 * self.movementDir)
 
     def brake(self, deceleration):
         # brakes the given amount, which can be either small or big enough to stop the car completely
@@ -153,7 +172,7 @@ class Car(Agent):
 
         return False
 
-    def find_nearest_traffic_light(self):
+    def findNearestTrafficLight(self):
         min_distance = 100  # support variable to get the min distance
         nearest_traffic_light = None
 
@@ -162,7 +181,7 @@ class Car(Agent):
                 i = (
                     0 if self.axis == 1 else 1
                 )  # support variable to see the axisDifference
-                distance = self.calculate_distance(self.pos, traffic_light.pos)
+                distance = self.calculateDistance(self.pos, traffic_light.pos)
 
                 # axisDifference represents the distance between the axis opposite to the car's movement, so it can choose
                 # the correct traffic light based on the fact that the traffic light corresponding to each car should not
@@ -174,15 +193,14 @@ class Car(Agent):
 
         return nearest_traffic_light
 
-    def calculate_distance(self, car_pos, traffic_light_pos):
+    def calculateDistance(self, car_pos, traffic_light_pos):
         # Calculates the euclidan distance between a car and a traffic light
         car_x, car_y = car_pos
         light_x, light_y = traffic_light_pos
         distance = ((car_x - light_x) ** 2 + (car_y - light_y) ** 2) ** 0.5
         return distance
 
-    def decide_direction(self):
-        newCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
+    def decideDirection(self, newCell):
         # Decide orientation based on type of cell
         if newCell == 4:
             orientation = "EAST"
@@ -214,9 +232,8 @@ class Car(Agent):
                 orientation = self.randomDirection("NORTH", "EAST")
         else:
             orientation = "NORTH"
-        self.cell = newCell
+        return orientation
         
-        self.orientate(orientation)
 
     def randomDirection(self, direction1, direction2):
         prob = random.random()
