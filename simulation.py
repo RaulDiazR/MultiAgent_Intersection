@@ -269,7 +269,6 @@ def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     #Se dibujan los carros
     for i in range(len(carros)):
-        print(carsMesa[i]['x']*10 - DimBoard, carsMesa[i]['z']*10 - DimBoard)
         carros[i].draw()
         carDir = (carsMesa[i]['speedX'], carsMesa[i]['speedZ'])
         carros[i].update(carsMesa[i]['x']*10 - DimBoard, carsMesa[i]['z']*10 - DimBoard, carDir, matrix)

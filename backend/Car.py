@@ -96,7 +96,7 @@ class Car(Agent):
         return None
 
     def checkTurn(self, currCell, pos0, pos1):
-        offset = 0.4
+        offset = 0.3
         return (
             pos0 + offset < len(self.matrix)
             and pos1 + offset < len(self.matrix)
