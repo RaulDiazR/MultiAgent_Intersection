@@ -76,7 +76,7 @@ class Car(Agent):
 
     def carAhead(self):
         # checks if there is a car ahead, in said case it decelerates so it doesn´t crash
-        radius = 1 if self.movementDir == 1 else 2
+        radius = 2 if self.movementDir == 1 else 4
         for neighbor in self.model.space.get_neighbors(self.pos, radius, False):
             if (
                 self.movementDir == 1

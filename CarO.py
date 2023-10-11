@@ -27,7 +27,7 @@ glEnable(GL_LIGHT0)
 glEnable(GL_LIGHTING)
 glEnable(GL_COLOR_MATERIAL)
 glEnable(GL_DEPTH_TEST)
-glShadeModel(GL_SMOOTH)           # most obj files expect to be smooth-shaded
+glShadeModel(GL_SMOOTH) # most obj files expect to be smooth-shaded
 
 # LOAD OBJECT AFTER PYGAME INIT
 #obj = OBJ(sys.argv[1], swapyz=True)
@@ -36,11 +36,10 @@ obj.generate()
 
 class CarO:
     
-    def __init__(self, dim, vel, pos, dir):
+    def __init__(self, dim, vel, pos, dir, orientation):
         
         self.DimBoard = dim
         #Se inicializa una posicion aleatoria en el tablero
-        print(pos)
         self.Position = [pos[0], 0.1, pos[1]]
         #self.Position[0]= random.randint(-dim, dim)
         #Inicializar las coordenadas (x,y,z) del cubo en el tablero
@@ -70,11 +69,16 @@ class CarO:
 
         #Variable para revisar si entro en una nueva celda
         self.lastCell = 0
-
-
         
+        # se define la orientación del carro, la cual puede ser:
+        # "EAST"
+        # "SOUTH"
+        # "WEST"
+        # "NORTH"
+        self.orientation = orientation
 
-    def update(self, x, z, dir, matrix):
+
+    def update(self, x, z, dir, orientation):
 
         # if self.Position[0] >= self.DimBoard:
         #     self.Position[0] -= 210
@@ -157,11 +161,16 @@ class CarO:
 
         
                     
+        # Se guarda la nueva posición           
         self.Position[0] = x
         self.Position[2] = z
         
+        # Se guarda la nueva dirección   
         self.Direction[0] = dir[0]
         self.Direction[2] = dir[1]
+        
+        # Se guarda la nueva orientación
+        self.orientation = orientation
 
     def draw(self):
         glPushMatrix()
@@ -175,11 +184,25 @@ class CarO:
         else:
             car_direction = [0, 0, 1]
 
-        # Calcular el ángulo de rotación para que la bandeja apunte en la dirección correcta
-        angle = math.degrees(math.atan2(car_direction[0], car_direction[2]))
+        # Calcular el ángulo de rotación para que el carro apunte conforme a su dirección correctamente
+        #angle = math.degrees(math.atan2(car_direction[0], car_direction[2]))
+        # Esto se hace al comparar la orientación de cada carro
+        # "EAST"
+        # "SOUTH"
+        # "WEST"
+        # "NORTH"
+        if self.orientation == "WEST":
+            angle = 90
+        elif self.orientation == "EAST":
+            angle = 270
+        
+        elif self.orientation == "NORTH":
+            angle = 0
+        elif self.orientation == "SOUTH":
+            angle = 180
 
         glRotatef(angle, 0, 1, 0)  # Rotar el carro
-        glRotatef(180, 0, 1, 0)  # Rotar el carro
+        #glRotatef(180, 0, 1, 0)  # Rotar el carro
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_COLOR_ARRAY)
         glRotate(270,1,0,0)

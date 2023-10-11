@@ -88,7 +88,8 @@ carrosCords = []
 for car in carsMesa:
     x, z = car['x']*10 - DimBoard, car['z']*10 - DimBoard
     carDir = (car['speedX'], car['speedZ'])
-    carrosCords.append(((x,z), carDir))
+    orientation = car['orientation']
+    carrosCords.append(((x,z), carDir, orientation))
     
         
 matrix = [
@@ -158,7 +159,7 @@ def Init():
         Texturas(i)
     
     for i in range(ncarros):
-        carros.append(CarO(DimBoard, 1, carrosCords[i][0], carrosCords[i][1]))
+        carros.append(CarO(DimBoard, 1, carrosCords[i][0], carrosCords[i][1], carrosCords[i][2]))
 
 def drawBuilding(x, z, t, sx, sz, sy, obj):
     glPushMatrix()
@@ -283,7 +284,11 @@ def display():
     for i in range(len(carros)):
         carros[i].draw()
         carDir = (carsMesa[i]['speedX'], carsMesa[i]['speedZ'])
-        carros[i].update(carsMesa[i]['x']*10 - DimBoard, carsMesa[i]['z']*10 - DimBoard, carDir, matrix)
+        carOrientation = carsMesa[i]['orientation']
+        x = carsMesa[i]['x']*10 - DimBoard
+        z = carsMesa[i]['z']*10 - DimBoard 
+        
+        carros[i].update(x, z, carDir, carOrientation)
 
     #Se dibujan el pasto
     drawGrass()
