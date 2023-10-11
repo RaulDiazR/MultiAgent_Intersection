@@ -61,8 +61,8 @@ houseObj.generate()
 treeObj = OBJ("./Objetos3D/low_poly_tree/Lowpoly_tree_sample.obj", swapyz=True)
 treeObj.generate()
 
-#trafficObj = OBJ("./Objetos3D/Trafficlight/Models and Textures/trafficlight.obj", swapyz=False)
-#trafficObj.generate()
+trafficObj = OBJ("./Objetos3D/traffic_light/semaforoEduardo1.obj", swapyz=False)
+trafficObj.generate()
 
 pygame.init()
 
@@ -140,13 +140,14 @@ def Init():
     for i in range(ncarros):
         carros.append(CarO(DimBoard, 1))
 
-def drawBuilding(x, z, t, sx, sz, sy, obj):
+def drawBuilding(x, z, tz, tx, sx, sz, sy, obj):
     glPushMatrix()
     glTranslate(x, 0.1, z)
     glEnableClientState(GL_VERTEX_ARRAY)
     glEnableClientState(GL_COLOR_ARRAY)
     glRotate(270,1,0,0)
-    glRotate(t,0,0,1)
+    glRotate(tz,0,0,1)
+    glRotate(tx,1,0,0)
     scaleVal = 1
     glScalef(1*sx, 1*sz, 1*sy)
     obj.render()
@@ -242,18 +243,40 @@ def drawWater():
 
 def drawTrees():
     #Arboles de la derecha
-    drawBuilding(-65, -15, 0, 0.5, 0.5, 0.5, treeObj)
-    drawBuilding(-70, 5, 110, 0.5, 0.5, 0.5, treeObj)
-    drawBuilding(-100, -15, 40, 0.5, 0.5, 0.5, treeObj)
-    drawBuilding(-95, 15, 75, 0.5, 0.5, 0.5, treeObj)
-    drawBuilding(-90, -3, 90, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(-65, -15, 0, 0, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(-70, 5, 110, 0, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(-100, -15, 40, 0, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(-95, 15, 75, 0, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(-90, -3, 90, 0, 0.5, 0.5, 0.5, treeObj)
 
     #Arboles de la Izquierda
-    drawBuilding(70, -10, 0, 0.5, 0.5, 0.5, treeObj)
-    drawBuilding(80, 10, 90, 0.5, 0.5, 0.5, treeObj)
-    drawBuilding(90, -10, 20, 0.5, 0.5, 0.5, treeObj)
-    drawBuilding(100, 10, 160, 0.5, 0.5, 0.5, treeObj)
-    drawBuilding(65, 5, 100, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(70, -10, 0, 0, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(80, 10, 90, 0, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(90, -10, 20, 0, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(100, 10, 160, 0, 0.5, 0.5, 0.5, treeObj)
+    drawBuilding(65, 5, 100, 0, 0.5, 0.5, 0.5, treeObj)
+
+def drawTraffic():
+
+    #Interseccion 1
+    drawBuilding(25, -25, 90, 90, 2, 2, 2, trafficObj)
+    drawBuilding(55, -25, 180, 90, 2, 2, 2, trafficObj)
+    drawBuilding(25, -55, 0, 90, 2, 2, 2, trafficObj)
+    drawBuilding(55, -55, 270, 90, 2, 2, 2, trafficObj)
+
+    #Interseccion 2
+    drawBuilding(-55, -55, 0, 90, 2, 2, 2, trafficObj)
+    drawBuilding(-25, -55, 270, 90, 2, 2, 2, trafficObj)
+    drawBuilding(-55, -25, 90, 90, 2, 2, 2, trafficObj)
+    drawBuilding(-25, -25, 180, 90, 2, 2, 2, trafficObj)
+
+    #Debajo Interseccion 1
+    drawBuilding(55, 25, 0, 90, 2, 2, 2, trafficObj)
+    drawBuilding(55, 55, 270, 90, 2, 2, 2, trafficObj)
+
+    #Debajo Interseccion 2
+    drawBuilding(-55, 25, 90, 90, 2, 2, 2, trafficObj)
+    drawBuilding(-55, 55, 180, 90, 2, 2, 2, trafficObj)
 
 def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -269,11 +292,14 @@ def display():
     drawWater()
 
     #Se dibujan buildings
-    drawBuilding(0, 40, 90, 3.3, 2, 2, buildObj)
-    drawBuilding(0, -80, 270, 1.3, 2, 3, buildObj)
+    drawBuilding(0, 40, 90, 0, 3.3, 2, 2, buildObj)
+    drawBuilding(0, -80, 270, 0, 1.3, 2, 3, buildObj)
 
     #Se dibujan arboles
     drawTrees()
+
+    #Se dibujan los semaforos
+    drawTraffic()
 
     #Se dibuja el plano gris y las calles
     glColor3f(0, 0, 0)
