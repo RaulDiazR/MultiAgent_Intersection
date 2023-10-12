@@ -3,7 +3,6 @@ from mesa import Agent, Model
 from mesa.space import ContinuousSpace
 from mesa.time import RandomActivation
 from auxFiles.SimpleContinuousModule import SimpleCanvas
-from mesa.visualization.ModularVisualization import ModularServer
 from Car import Car
 from TrafficLight import TrafficLight
 
@@ -196,6 +195,3 @@ canvas = SimpleCanvas(agent_draw, 500, 500)
 
 
 model_params = {}
-# server = ModularServer(City, [canvas], "Traffic", model_params)
-# server.port = 8522
-# server.launch()
