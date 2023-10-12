@@ -11,6 +11,7 @@ class Car(Agent):
         super().__init__(model.next_id(), model)
         self.pos = pos  # current position
         self.orientation = ""
+        self.braking = False
         self.matrix = model.matrix
         newCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
         orientation = self.decideDirection(newCell)
@@ -22,9 +23,9 @@ class Car(Agent):
         self.check_TL = False  # support variable that indicates if a new traffic light has to be found (happens when the car gets ahead of its current traffic light)
 
     def step(self):
+        if self.pos[self.axis] >= 22: self.pos[self.axis] -= 1
         carAhead = self.carAhead()  # check if theres any car ahead
         currCell = self.matrix[math.floor(self.pos[1])][math.floor(self.pos[0])]
-        if self.pos[self.axis] >= 22: self.pos[self.axis] -= 1
         if self.checkTurn(currCell, self.pos[0], self.pos[1]) and self.turn != "": #check if it needs to turn
             self.orientate(self.turn)
             self.orientation = self.turn
@@ -40,8 +41,9 @@ class Car(Agent):
                     turnDirection = self.decideDirection(aheadCell)
                     self.turn = turnDirection if turnDirection != self.orientation else ""
 
-
-        if self.check_TL:
+        new_speed = 0.0
+        
+        if self.check_TL or not(self.traffic_light):
             self.traffic_light = self.findNearestTrafficLight()
         # if there is no car ahead, it checks if the nearest traffic light is close
         if carAhead == None:
@@ -52,7 +54,7 @@ class Car(Agent):
                 new_speed = self.accelerate()
 
         # decelerates if there is a car ahead
-        else:
+        elif not(self.braking):
             new_speed = self.decelerate(carAhead)
 
         speedLimit = 0.25
@@ -76,7 +78,7 @@ class Car(Agent):
 
     def carAhead(self):
         # checks if there is a car ahead, in said case it decelerates so it doesn´t crash
-        radius = 2 if self.movementDir == 1 else 4
+        radius = 2 if self.movementDir == 1 else 3
         for neighbor in self.model.space.get_neighbors(self.pos, radius, False):
             if (
                 self.movementDir == 1
@@ -88,7 +90,7 @@ class Car(Agent):
 
             elif (
                 self.movementDir == -1
-                and self.pos[self.axis] > neighbor.pos[self.axis]
+                and neighbor.pos[self.axis] < self.pos[self.axis]
                 and type(neighbor) == Car
                 and self.orientation == neighbor.orientation
             ):
@@ -110,12 +112,15 @@ class Car(Agent):
 
 
     def accelerate(self):
+        self.braking = False
         return self.speed[self.axis] + (0.01 * self.movementDir)
 
     def decelerate(self, carAhead):
+        self.braking = False
         return carAhead.speed[self.axis] - (0.05 * self.movementDir)
 
     def brake(self, deceleration):
+        self.braking = True
         # brakes the given amount, which can be either small or big enough to stop the car completely
         return self.speed[self.axis] - deceleration
 
@@ -123,9 +128,7 @@ class Car(Agent):
         if self.traffic_light == None:
             return False  # a contingency so the program doesn't crash in rare scenarios
         axis = self.axis
-        distance = (self.traffic_light.pos[axis]) - self.pos[
-            axis
-        ]  # distance between the car and the its traffic light
+        distance = (self.traffic_light.pos[axis]) - self.pos[axis]  # distance between the car and the its traffic light
         # checks if there is a red or yellow light nearby the car
         if self.movementDir == 1:
             if (
@@ -157,13 +160,13 @@ class Car(Agent):
                 if (
                     (self.traffic_light.state == 1 or self.traffic_light.state == 2)
                     and distance > -4.0
-                    and distance < -0.4
+                    and distance < -1.2
                 ):
                     return -0.01 if self.speed[self.axis] < -0.1 else 0.0
                 elif (
                     (self.traffic_light.state == 1 or self.traffic_light.state == 2)
-                    and distance > -0.4
-                    and distance < 0.0
+                    and distance > -1.2
+                    and distance < -0.2
                 ):
                     return -1.0
             else:
@@ -177,17 +180,25 @@ class Car(Agent):
 
         for traffic_light in self.model.traffic_lights:
             if self.orientation == traffic_light.orientation:
-                i = (
-                    0 if self.axis == 1 else 1
-                )  # support variable to see the axisDifference
-                distance = self.calculateDistance(self.pos, traffic_light.pos)
-
+                eucli_distance = self.calculateDistance(self.pos, traffic_light.pos)
+                
+                distance_in_axis = (traffic_light.pos[self.axis] - self.pos[self.axis])  # distance between the car and the traffic light
+                i = (0 if self.axis == 1 else 1)  # support variable to see the axisDifference
+                
+                # checks if the traffic light is ahead of the car and not behind
+                car_is_ahead = False
+                if self.movementDir == 1 and distance_in_axis > 0.0:
+                  car_is_ahead = True
+                  
+                elif self.movementDir == -1 and distance_in_axis < 0.0:
+                  car_is_ahead = True
+                  
                 # axisDifference represents the distance between the axis opposite to the car's movement, so it can choose
                 # the correct traffic light based on the fact that the traffic light corresponding to each car should not
                 # be further than 1.5 of diantce in said axis
                 axisDifference = abs(traffic_light.pos[i] - self.pos[i])
-                if distance < min_distance and distance > 0.0 and axisDifference < 5.0:
-                    min_distance = distance
+                if eucli_distance < min_distance and car_is_ahead and axisDifference < 5.0:
+                    min_distance = eucli_distance
                     nearest_traffic_light = traffic_light
 
         return nearest_traffic_light
@@ -245,6 +256,7 @@ class Car(Agent):
         # orientations for traffic lights and cars
         if newOrientation == self.orientation:
             return
+        self.traffic_light = None
         self.orientation = newOrientation
         if self.orientation == "NORTH":
             self.axis = 1
@@ -263,6 +275,4 @@ class Car(Agent):
         # east: positive movement
         # north: negative movement
         # west: negative movement
-        self.movementDir = (
-            1 if self.orientation == "SOUTH" or self.orientation == "EAST" else -1
-        )
+        self.movementDir = 1 if self.orientation == "SOUTH" or self.orientation == "EAST" else -1

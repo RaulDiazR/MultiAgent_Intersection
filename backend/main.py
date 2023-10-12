@@ -3,7 +3,7 @@ from mesa import Agent, Model
 from mesa.space import ContinuousSpace
 from mesa.time import RandomActivation
 from auxFiles.SimpleContinuousModule import SimpleCanvas
-
+from mesa.visualization.ModularVisualization import ModularServer
 from Car import Car
 from TrafficLight import TrafficLight
 
@@ -60,7 +60,7 @@ class City(Model):
     
     # West Cars
     py = 6.5
-    px = 20
+    px = 19
     for i in range(2):
       px += i
       car = Car(self, np.array([px, py]),)
@@ -75,7 +75,7 @@ class City(Model):
       self.schedule.add(car)
 
     # --- Vertical Cars ---
-    
+
     # South Cars
     first = True
     for py in range(4):
@@ -92,18 +92,17 @@ class City(Model):
       
     # North Cars
     first = True
-    for py in range(4):
+    for py in range(21, 17, -1):
       if first:
         px = 7.5
         first = False
       else:
         px = 15.5
         first = True
-      py += 1
       car = Car(self, np.array([px, py]),)
       self.space.place_agent(car, car.pos)
       self.schedule.add(car)
-    
+      
   def drawTrafficLights(self):
     traffic_lights_coords_east = [
       np.array([13, 8]),
@@ -197,3 +196,6 @@ canvas = SimpleCanvas(agent_draw, 500, 500)
 
 
 model_params = {}
+# server = ModularServer(City, [canvas], "Traffic", model_params)
+# server.port = 8522
+# server.launch()

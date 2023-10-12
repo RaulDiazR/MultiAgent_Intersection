@@ -206,7 +206,7 @@ class CarO:
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_COLOR_ARRAY)
         glRotate(270,1,0,0)
-        scaleVal = 2
+        scaleVal = 1.8
         glScalef(scaleVal,scaleVal,scaleVal)
         obj.render()
         glDisableClientState(GL_VERTEX_ARRAY)
