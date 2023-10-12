@@ -27,7 +27,7 @@ pip install numpy mesa flask json uuid pygame PyOpenGL math requests
 
 To execute the project, follow these steps:
 
-2. Run the `backend.py` file in a single terminal. This process must run in the background for the program to function correctly. Use the following command to execute the Python code:
+1. Run the `backend.py` file in a single terminal. This process must run in the background for the program to function correctly. Use the following command to execute the Python code:
 
 ```bash
 python backend.py
@@ -35,18 +35,21 @@ python backend.py
 
 Note that the `backend.py` file is located inside the 'backend' folder, and all the files in this folder handle the logical section of the program.
 
-3. After executing `backend.py`, open a new terminal. In this terminal, run the `simulation.py` file. The `simulation.py` file is located in the main directory of the project, along with all the components of the graphical section of the program. Use the following command to execute the Python code:
+2. After executing `backend.py`, open a new terminal. In this terminal, run the `simulation.py` file. The `simulation.py` file is located in the main directory of the project, along with all the components of the graphical section of the program. Use the following command to execute the Python code:
 
 ```bash
 python simulation.py
 ```
 
-Congratulations! By following the steps outlined above, the program should now run without any issues. Please be aware that the program's execution speed may be slow on computers with limited resources.
+3. Congratulations! By following the steps outlined above, the program should now run without any issues. Please be aware that the program's execution speed may be slow on computers with limited resources.
 
 
 ## Documentation
 
-For more detailed information about Mesa, the agent-based modeling framework used in this project, please refer to the [Mesa API Reference](#).
+For more detailed information about Mesa, the agent-based modeling framework used in this project, please refer to the [Mesa API Reference](https://mesa.readthedocs.io/en/stable/apis/api_main.html).
+
+For more detailed information about OpenGL, the graphics library used in this project, you can refer to the official [PyOpenGL documentation](https://pypi.org/project/PyOpenGL/). 
+
 
 ## Contributing
 
