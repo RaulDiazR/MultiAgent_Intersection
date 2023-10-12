@@ -6,8 +6,6 @@ MultiAgent-Intersection is a simulation project that creates a virtual city with
 
 ## Installation
 
-## Installation
-
 To run MultiAgent-Intersection, you need to have Python installed on your system. Additionally, you'll need the following Python libraries:
 
 - numpy
