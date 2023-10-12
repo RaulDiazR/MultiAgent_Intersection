@@ -6,25 +6,45 @@ MultiAgent-Intersection is a simulation project that creates a virtual city with
 
 ## Installation
 
+## Installation
+
 To run MultiAgent-Intersection, you need to have Python installed on your system. Additionally, you'll need the following Python libraries:
 
 - numpy
 - mesa
-- OpenGL
+- flask
+- json
+- uuid
+- pygame
+- PyOpenGL
+- math
+- requests
 
-You can install Python from the [official website](https://www.python.org/downloads/) and install the required libraries using pip:
+You can install Python from the [official website](https://www.python.org/downloads) and install the required libraries using pip:
 
 ```bash
-pip install numpy mesa PyOpenGL
+pip install numpy mesa flask json uuid pygame PyOpenGL math requests
 ```
-
 ## Usage
 
-To run the simulation, execute the `main.py` script.
+To execute the project, follow these steps:
+
+2. Run the `backend.py` file in a single terminal. This process must run in the background for the program to function correctly. Use the following command to execute the Python code:
 
 ```bash
-python main.py
+python backend.py
 ```
+
+Note that the `backend.py` file is located inside the 'backend' folder, and all the files in this folder handle the logical section of the program.
+
+3. After executing `backend.py`, open a new terminal. In this terminal, run the `simulation.py` file. The `simulation.py` file is located in the main directory of the project, along with all the components of the graphical section of the program. Use the following command to execute the Python code:
+
+```bash
+python simulation.py
+```
+
+Congratulations! By following the steps outlined above, the program should now run without any issues. Please be aware that the program's execution speed may be slow on computers with limited resources.
+
 
 ## Documentation
 
