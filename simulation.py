@@ -26,8 +26,8 @@ ZFAR=3000
 #Variables para definir la posicion del observador
 #gluLookAt(EYE_X,EYE_Y,EYE_Z,CENTER_X,CENTER_Y,CENTER_Z,UP_X,UP_Y,UP_Z)
 EYE_X=0.0
-EYE_Y=200.0 #150
-EYE_Z=0.01 #50
+EYE_Y=50 #200
+EYE_Z=200 #0.01
 CENTER_X=0
 CENTER_Y=0
 CENTER_Z=0
@@ -58,9 +58,12 @@ DimBoard = 110
 theta = 0.0
 radius = 300
 
+#Variable de control de la camara
+inCar = False
+
 # Arreglo para el manejo de texturas
 textures = []
-filenames = ["pasto.bmp", "agua.bmp", "white.bmp"]
+filenames = ["./Textures/pasto.bmp", "./Textures/agua.bmp", "./Textures/white.bmp", "./Textures/atardecer.bmp", "./Textures/atardecer_down.bmp"]
 
 buildObj = OBJ("./Objetos3D/Building/Rv_Building_3.obj", swapyz=True)
 buildObj.generate()
@@ -84,7 +87,7 @@ ncarros = len(carsMesa)
 
 carrosCords = []
 
-# Se guardan las posiciones iniciales de los robots
+# Se guardan las posiciones iniciales de los carros
 for car in carsMesa:
     x, z = car['x']*10 - DimBoard, car['z']*10 - DimBoard
     carDir = (car['speedX'], car['speedZ'])
@@ -125,6 +128,22 @@ def lookAt():
     newZ = -EYE_X * math.sin(rad) + EYE_Z * math.cos(rad)
     gluLookAt(newX,EYE_Y,newZ,CENTER_X,CENTER_Y,CENTER_Z,UP_X,UP_Y,UP_Z)
     
+def lookAtCar(CarObject):
+    glLoadIdentity()
+    if CarObject.orientation == "NORTH":
+        x_coord = 250
+        z_coord = CarObject.Position[2]
+    elif CarObject.orientation == "SOUTH":
+        x_coord = -250
+        z_coord = CarObject.Position[2]
+    elif CarObject.orientation == "EAST":
+        x_coord = CarObject.Position[0]
+        z_coord = 250
+    elif CarObject.orientation == "WEST":
+        x_coord = CarObject.Position[0]
+        z_coord = -250
+    gluLookAt(CarObject.Position[0], CarObject.Position[1] + 5, CarObject.Position[2], x_coord, 0, z_coord, 0, 1, 0)
+
 def Texturas(filepath):
     textures.append(glGenTextures(1))
     id = len(textures) - 1
@@ -160,6 +179,85 @@ def Init():
     
     for i in range(ncarros):
         carros.append(CarO(DimBoard, 1, carrosCords[i][0], carrosCords[i][1], carrosCords[i][2]))
+
+def drawSkybox():
+    glEnable(GL_TEXTURE_2D)
+    glDisable(GL_DEPTH_TEST)
+    glColor3f(1.0, 1.0, 1.0)
+
+    #Caras laterales
+    glBindTexture(GL_TEXTURE_2D, textures[3])
+    glBegin(GL_QUADS)
+
+    #Cara Z negativo
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(-255, 250, -250)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(255, 250, -250)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(255, -250, -250)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(-255, -250, -250)
+
+    #Cara X positivo
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(250, 250, -255)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(250, 250, 255)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(250, -250, 255)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(250, -250, -255)
+
+    #Cara Z Positivo
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(255, 250, 250)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(-255, 250, 250)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(-255, -250, 250)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(255, -250, 250)
+
+    #Cara X Negativa
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(-250, 250, 255)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(-250, 250, -255)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(-250, -250, -255)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(-250, -250, 255)
+
+    glEnd()
+
+    #Cara inferior
+    glBindTexture(GL_TEXTURE_2D, textures[4])
+    glBegin(GL_QUADS)
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(-250, -250, -250)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(250, -250, -250)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(250, -250, 250)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(-250, -250, 250)
+
+    glEnd()
+    glBindTexture(GL_TEXTURE_2D, textures[2])
+    glEnable(GL_DEPTH_TEST)
+
+def drawNewSkybox():
+    glEnable(GL_TEXTURE_2D)
+    glDisable(GL_DEPTH_TEST)
+    glColor3f(0.5, 0.5, 1.0)
+    glBindTexture(GL_TEXTURE_2D, textures[3])
+    quadric = gluNewQuadric()
+    quad = gluNewQuadric()
+    gluSphere(quadric,250,100,20)
+    glBindTexture(GL_TEXTURE_2D, textures[2])
+    glEnable(GL_DEPTH_TEST)
 
 def drawBuilding(x, z, tz, tx, sx, sz, sy, obj):
     glPushMatrix()
@@ -303,6 +401,11 @@ def display():
     r = requests.get(URL_BASE+LOCATION)
     carsMesa = json.loads(r.headers["cars"])
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+    #Se dibuja el Skybox
+    #drawSkybox()
+    drawNewSkybox()
+
     #Se dibujan los carros
     for i in range(len(carros)):
         carros[i].draw()
@@ -312,6 +415,9 @@ def display():
         z = carsMesa[i]['z']*10 - DimBoard 
         
         carros[i].update(x, z, carDir, carOrientation)
+
+    if inCar:
+        lookAtCar(carros[0])
 
     #Se dibujan el pasto
     drawGrass()
@@ -393,17 +499,24 @@ while not done:
             
     keys = pygame.key.get_pressed()  # Checking pressed keys
     if keys[pygame.K_RIGHT]:
-        if theta > 359.0:
-            theta = 0
-        else:
-            theta += 1.0
-        lookAt()
+        if(inCar == False):
+            if theta < 1.0:
+                theta = 360.0
+            else:
+                theta -= 1.0
+            lookAt()
     if keys[pygame.K_LEFT]:
-        if theta < 1.0:
-            theta = 360.0
+        if(inCar == False):
+            if theta < 1.0:
+                theta = 360.0
+            else:
+                theta -= 1.0
+            lookAt()
+    if keys[pygame.K_c]:
+        if inCar:
+            inCar = False
         else:
-            theta -= 1.0
-        lookAt()
+            inCar = True
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:

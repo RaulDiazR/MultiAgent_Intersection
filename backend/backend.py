@@ -78,5 +78,5 @@ def queryState(id):
     )
 
 
-app.run()
-# app.run(host=)
+#app.run()
+app.run(host='0.0.0.0', port=5000)
