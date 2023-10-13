@@ -50,7 +50,7 @@ radius = 300
 
 # Arreglo para el manejo de texturas
 textures = []
-filenames = ["pasto.bmp", "agua.bmp", "white.bmp"]
+filenames = ["pasto.bmp", "agua.bmp", "white.bmp", "atardecer.bmp", "atardecer_down.bmp"]
 
 buildObj = OBJ("./Objetos3D/Building/Rv_Building_3.obj", swapyz=True)
 buildObj.generate()
@@ -139,6 +139,74 @@ def Init():
     
     for i in range(ncarros):
         carros.append(CarO(DimBoard, 1))
+
+def drawSkybox():
+    glEnable(GL_TEXTURE_2D)
+    glDisable(GL_DEPTH_TEST)
+    glColor3f(1.0, 1.0, 1.0)
+
+    #Caras laterales
+    glBindTexture(GL_TEXTURE_2D, textures[3])
+    glBegin(GL_QUADS)
+
+    #Cara Z negativo
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(-250, 250, -250)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(250, 250, -250)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(250, -250, -250)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(-250, -250, -250)
+
+    #Cara X positivo
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(250, 250, -250)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(250, 250, 250)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(250, -250, 250)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(250, -250, -250)
+
+    #Cara Z Positivo
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(250, 250, 250)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(-250, 250, 250)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(-250, -250, 250)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(250, -250, 250)
+
+    #Cara X Negativa
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(-250, 250, 250)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(-250, 250, -250)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(-250, -250, -250)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(-250, -250, 250)
+
+    glEnd()
+
+    #Cara inferior
+    glBindTexture(GL_TEXTURE_2D, textures[4])
+    glBegin(GL_QUADS)
+
+    glTexCoord2f(0.0, 0.0)
+    glVertex3d(-250, -250, -250)
+    glTexCoord2f(1.0, 0.0)
+    glVertex3d(250, -250, -250)
+    glTexCoord2f(1.0, 1.0)
+    glVertex3d(250, -250, 250)
+    glTexCoord2f(0.0, 1.0)
+    glVertex3d(-250, -250, 250)
+
+    glEnd()
+    glBindTexture(GL_TEXTURE_2D, textures[2])
+    glEnable(GL_DEPTH_TEST)
 
 def drawBuilding(x, z, tz, tx, sx, sz, sy, obj):
     glPushMatrix()
@@ -280,6 +348,10 @@ def drawTraffic():
 
 def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+    #Se dibuja el Skybox
+    drawSkybox()
+
     #Se dibujan los carros
     for obj in carros:
         obj.draw()
