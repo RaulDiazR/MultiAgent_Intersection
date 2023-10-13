@@ -50,7 +50,7 @@ radius = 300
 
 # Arreglo para el manejo de texturas
 textures = []
-filenames = ["pasto.bmp", "agua.bmp", "white.bmp", "atardecer.bmp", "atardecer_down.bmp"]
+filenames = ["./Textures/pasto.bmp", "./Textures/agua.bmp", "./Textures/white.bmp", "./Textures/atardecer.bmp", "./Textures/atardecer_down.bmp"]
 
 buildObj = OBJ("./Objetos3D/Building/Rv_Building_3.obj", swapyz=True)
 buildObj.generate()
@@ -151,43 +151,43 @@ def drawSkybox():
 
     #Cara Z negativo
     glTexCoord2f(0.0, 0.0)
-    glVertex3d(-250, 250, -250)
+    glVertex3d(-255, 250, -250)
     glTexCoord2f(1.0, 0.0)
-    glVertex3d(250, 250, -250)
+    glVertex3d(255, 250, -250)
     glTexCoord2f(1.0, 1.0)
-    glVertex3d(250, -250, -250)
+    glVertex3d(255, -250, -250)
     glTexCoord2f(0.0, 1.0)
-    glVertex3d(-250, -250, -250)
+    glVertex3d(-255, -250, -250)
 
     #Cara X positivo
     glTexCoord2f(0.0, 0.0)
-    glVertex3d(250, 250, -250)
+    glVertex3d(250, 250, -255)
     glTexCoord2f(1.0, 0.0)
-    glVertex3d(250, 250, 250)
+    glVertex3d(250, 250, 255)
     glTexCoord2f(1.0, 1.0)
-    glVertex3d(250, -250, 250)
+    glVertex3d(250, -250, 255)
     glTexCoord2f(0.0, 1.0)
-    glVertex3d(250, -250, -250)
+    glVertex3d(250, -250, -255)
 
     #Cara Z Positivo
     glTexCoord2f(0.0, 0.0)
-    glVertex3d(250, 250, 250)
+    glVertex3d(255, 250, 250)
     glTexCoord2f(1.0, 0.0)
-    glVertex3d(-250, 250, 250)
+    glVertex3d(-255, 250, 250)
     glTexCoord2f(1.0, 1.0)
-    glVertex3d(-250, -250, 250)
+    glVertex3d(-255, -250, 250)
     glTexCoord2f(0.0, 1.0)
-    glVertex3d(250, -250, 250)
+    glVertex3d(255, -250, 250)
 
     #Cara X Negativa
     glTexCoord2f(0.0, 0.0)
-    glVertex3d(-250, 250, 250)
+    glVertex3d(-250, 250, 255)
     glTexCoord2f(1.0, 0.0)
-    glVertex3d(-250, 250, -250)
+    glVertex3d(-250, 250, -255)
     glTexCoord2f(1.0, 1.0)
-    glVertex3d(-250, -250, -250)
+    glVertex3d(-250, -250, -255)
     glTexCoord2f(0.0, 1.0)
-    glVertex3d(-250, -250, 250)
+    glVertex3d(-250, -250, 255)
 
     glEnd()
 
@@ -205,6 +205,17 @@ def drawSkybox():
     glVertex3d(-250, -250, 250)
 
     glEnd()
+    glBindTexture(GL_TEXTURE_2D, textures[2])
+    glEnable(GL_DEPTH_TEST)
+
+def drawNewSkybox():
+    glEnable(GL_TEXTURE_2D)
+    glDisable(GL_DEPTH_TEST)
+    glColor3f(1.0, 1.0, 1.0)
+    glBindTexture(GL_TEXTURE_2D, textures[3])
+    quadric = gluNewQuadric()
+    quad = gluNewQuadric()
+    gluSphere(quadric,250,100,20)
     glBindTexture(GL_TEXTURE_2D, textures[2])
     glEnable(GL_DEPTH_TEST)
 
@@ -351,6 +362,7 @@ def display():
 
     #Se dibuja el Skybox
     drawSkybox()
+    #drawNewSkybox()
 
     #Se dibujan los carros
     for obj in carros:
