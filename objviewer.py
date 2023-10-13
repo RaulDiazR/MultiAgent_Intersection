@@ -48,6 +48,8 @@ DimBoard = 110
 theta = 0.0
 radius = 300
 
+#Variable de control de la camara
+inCar = False
 # Arreglo para el manejo de texturas
 textures = []
 filenames = ["./Textures/pasto.bmp", "./Textures/agua.bmp", "./Textures/white.bmp", "./Textures/atardecer.bmp", "./Textures/atardecer_down.bmp"]
@@ -103,6 +105,10 @@ def lookAt():
     newX = EYE_X * math.cos(rad) + EYE_Z * math.sin(rad)
     newZ = -EYE_X * math.sin(rad) + EYE_Z * math.cos(rad)
     gluLookAt(newX,EYE_Y,newZ,CENTER_X,CENTER_Y,CENTER_Z,UP_X,UP_Y,UP_Z)
+
+def lookAtCar(CarObject):
+    glLoadIdentity()
+    gluLookAt(CarObject.Position[0], CarObject.Position[1] + 5, CarObject.Position[2], (CarObject.Direction[0] * 250), (CarObject.Direction[1] * 250), (CarObject.Direction[2] * 250), 0, 1, 0)
 
 def Texturas(filepath):
     textures.append(glGenTextures(1))
@@ -369,6 +375,9 @@ def display():
         obj.draw()
         obj.update(obj.Position[0], obj.Position[2], matrix)
 
+    if inCar:
+        lookAtCar(carros[0])
+
     #Se dibujan el pasto
     drawGrass()
 
@@ -454,17 +463,24 @@ while not done:
             
     keys = pygame.key.get_pressed()  # Checking pressed keys
     if keys[pygame.K_RIGHT]:
-        if theta > 359.0:
-            theta = 0
-        else:
-            theta += 1.0
-        lookAt()
+        if(inCar == False):
+            if theta > 359.0:
+                theta = 0
+            else:
+                theta += 1.0
+            lookAt()
     if keys[pygame.K_LEFT]:
-        if theta < 1.0:
-            theta = 360.0
+        if(inCar == False):
+            if theta < 1.0:
+                theta = 360.0
+            else:
+                theta -= 1.0
+            lookAt()
+    if keys[pygame.K_c]:
+        if inCar:
+            inCar = False
         else:
-            theta -= 1.0
-        lookAt()
+            inCar = True
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
