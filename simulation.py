@@ -131,17 +131,17 @@ def lookAt():
 def lookAtCar(CarObject):
     glLoadIdentity()
     if CarObject.orientation == "NORTH":
-        x_coord = 250
-        z_coord = CarObject.Position[2]
-    elif CarObject.orientation == "SOUTH":
-        x_coord = -250
-        z_coord = CarObject.Position[2]
-    elif CarObject.orientation == "EAST":
-        x_coord = CarObject.Position[0]
-        z_coord = 250
-    elif CarObject.orientation == "WEST":
         x_coord = CarObject.Position[0]
         z_coord = -250
+    elif CarObject.orientation == "SOUTH":
+        x_coord = -CarObject.Position[0]
+        z_coord = 250
+    elif CarObject.orientation == "EAST":
+        x_coord = 250
+        z_coord = CarObject.Position[2]
+    elif CarObject.orientation == "WEST":
+        x_coord = -250
+        z_coord = CarObject.Position[2]
     gluLookAt(CarObject.Position[0], CarObject.Position[1] + 5, CarObject.Position[2], x_coord, 0, z_coord, 0, 1, 0)
 
 def Texturas(filepath):
