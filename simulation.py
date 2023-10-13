@@ -503,7 +503,7 @@ while not done:
             if theta < 1.0:
                 theta = 360.0
             else:
-                theta -= 1.0
+                theta += 1.0
             lookAt()
     if keys[pygame.K_LEFT]:
         if(inCar == False):
