@@ -211,7 +211,7 @@ def drawSkybox():
 def drawNewSkybox():
     glEnable(GL_TEXTURE_2D)
     glDisable(GL_DEPTH_TEST)
-    glColor3f(1.0, 1.0, 1.0)
+    glColor3f(0.5, 0.5, 1.0)
     glBindTexture(GL_TEXTURE_2D, textures[3])
     quadric = gluNewQuadric()
     quad = gluNewQuadric()
@@ -361,8 +361,8 @@ def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
     #Se dibuja el Skybox
-    drawSkybox()
-    #drawNewSkybox()
+    #drawSkybox()
+    drawNewSkybox()
 
     #Se dibujan los carros
     for obj in carros:
