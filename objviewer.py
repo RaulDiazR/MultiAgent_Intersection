@@ -108,7 +108,19 @@ def lookAt():
 
 def lookAtCar(CarObject):
     glLoadIdentity()
-    gluLookAt(CarObject.Position[0], CarObject.Position[1] + 5, CarObject.Position[2], (CarObject.Direction[0] * 250), (CarObject.Direction[1] * 250), (CarObject.Direction[2] * 250), 0, 1, 0)
+    if CarObject.Direction[0] == 1:
+        x_coord = 250
+        z_coord = CarObject.Position[2]
+    elif CarObject.Direction[0] == -1:
+        x_coord = -250
+        z_coord = CarObject.Position[2]
+    elif CarObject.Direction[2] == 1:
+        x_coord = CarObject.Position[0]
+        z_coord = 250
+    elif CarObject.Direction[2] == -1:
+        x_coord = CarObject.Position[0]
+        z_coord = -250
+    gluLookAt(CarObject.Position[0], CarObject.Position[1] + 5, CarObject.Position[2], x_coord, 0, z_coord, 0, 1, 0)
 
 def Texturas(filepath):
     textures.append(glGenTextures(1))
