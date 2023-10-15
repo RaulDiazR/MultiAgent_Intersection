@@ -515,8 +515,10 @@ while not done:
     if keys[pygame.K_c]:
         if inCar:
             inCar = False
+            theta = 0
         else:
             inCar = True
+            theta = 0
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
